@@ -1,0 +1,70 @@
+export const common = {
+    'module-name': 'Xray4Magisk',
+    'dashboard-version': "0.0.1-release",
+    'pulling-text': '下拉即可刷新...',
+    'loosing-text': '释放即可刷新...',
+    'loading-text': '加载中...',
+    'success-text': '成功',
+    'tips': '提示',
+    'confirm-text': '确定',
+    'ignore-text': '不再提醒',
+    'dashboard': "仪表盘",
+    'setting': "设置"
+}
+export const dashboard = {
+    'version': '版本',
+    'version-module': '模块',
+    'version-dashboard': '仪表盘',
+
+    'status': '状态',
+    'status-core-pid': "进程 ID",
+    'status-core-status': "核心状态",
+    'status-core-status-stopped': "停止",
+    'status-core-status-running': "运行中",
+    'status-core-type': '核心类型',
+    'status-method': '代理方式',
+
+    'tool': '工具',
+    'tool-update-core': '更新核心',
+    'tool-update-geodata': '更新 Geodata 数据',
+    'tool-update-subscribe': '更新订阅',
+    'tool-update-yacd-meta': '更新 Yacd-Meta',
+    'tool-update-tun2socks': '更新 Tun2socks',
+    'tool-switch': '切换出栈',
+    'tool-switch-success': '切换成功',
+    'tool-switch-failed': '切换失败',
+    'tool-switch-custom': '自定义切换',
+    'tool-switch-custom-edit': '编辑自定义切换',
+
+    'stdout': '输出',
+}
+export const setting = {
+    'xrayhelper': '配置项 - XrayHelper',
+    'xrayhelper-core-type': '核心类型',
+    'xrayhelper-core-path': '核心路径',
+    'xrayhelper-core-config': '核心配置',
+    'xrayhelper-data-dir': '数据目录',
+    'xrayhelper-run-dir': '临时目录',
+    'xrayhelper-proxy-tag': '出栈代理标签',
+    'xrayhelper-sub-list': '订阅地址',
+
+    'proxy': '配置项 - Proxy',
+    'proxy-method': '代理方式',
+    'proxy-tproxy-port': '透明代理端口',
+    'proxy-socks-port': 'Socks 代理端口',
+    'proxy-tun-device': 'Tun 设备名',
+    'proxy-enable-ipv6': '启用 IPv6',
+    'proxy-auto-dns-strategy': '自动配置 DNS 策略',
+    'proxy-mode': '应用名单模式',
+    'proxy-pkg-list': '应用名单',
+    'proxy-ap-list': '外部代理接口',
+    'proxy-ignore-list': '忽略接口',
+    'proxy-intra-list': '标记的内网地址',
+
+    'clash': '配置项 - Clash',
+    'clash-dns-port': 'DNS 端口',
+    'clash-template': '配置模板',
+
+    'cannot-get-config': '无法获取 XrayHelper 配置文件',
+    'running-warn': '当前核心正在运行，强烈建议停止核心并停用代理后再修改此页配置',
+}
