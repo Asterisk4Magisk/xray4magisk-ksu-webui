@@ -29,7 +29,7 @@ export const readFile = async (filePath) => {
     return Buffer.from(await execCmd(`base64 -w 0 ${filePath}`), "base64").toString('utf-8')
 }
 export const saveFile = (content, filePath) => {
-    execCmd(`echo ${Buffer.from(content).toString("base64")} | base64 -d > ${filePath}`)
+    return execCmd(`echo ${Buffer.from(content).toString("base64")} | base64 -d > ${filePath}`)
 }
 export const callApi = async (api) => {
     return JSON.parse(await execCmd(`su -c ${XRAYHELPER} -c ${XRAYHELPER_CONFIG} api ${api}`))

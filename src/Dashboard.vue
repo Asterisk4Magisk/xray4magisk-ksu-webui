@@ -134,6 +134,10 @@ const switchCustomEditClicked = () => {
     readFile(`${status.value.dataDir}/custom.txt`).then(value => {
         switchCustomResult.value = value.trim().split(/\s+/)
         switchCustomEditor.value = true
+    }).catch(() => {
+        saveFile('', `${status.value.dataDir}/custom.txt`).then(() => {
+            switchCustomEditClicked()
+        })
     })
 }
 const editSwitchCustom = (value, index) => {
