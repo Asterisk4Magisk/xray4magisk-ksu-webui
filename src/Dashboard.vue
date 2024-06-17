@@ -74,7 +74,7 @@
                     </van-button>
                 </van-col>
             </van-row>
-            <van-space/>
+            <van-space v-show="status.coreType!=='mihomo'"/>
         </van-cell-group>
         <!-- switch chooser -->
         <van-popup v-model:show="switchChooser" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="refresh">
