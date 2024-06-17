@@ -1,9 +1,10 @@
 export const common = {
     'module-name': 'Xray4Magisk',
-    'dashboard-version': "0.0.1-release",
+    'dashboard-version': "0.0.2-release",
     'pulling-text': 'Scroll down to refresh...',
     'loosing-text': 'Release to refresh...',
     'loading-text': 'Loading...',
+    'waiting-text': 'Waiting...',
     'success-text': 'Success',
     'tips': 'Tips',
     'confirm-text': 'Confirm',
@@ -26,6 +27,7 @@ export const dashboard = {
 
     'tool': 'Tool',
     'tool-update-core': 'Update Core',
+    'tool-update-adghome': 'Update AdGuardHome',
     'tool-update-geodata': 'Update Geodata',
     'tool-update-subscribe': 'Update Subscribe',
     'tool-update-yacd-meta': 'Update Yacd-Meta',
@@ -47,6 +49,17 @@ export const setting = {
     'xrayhelper-run-dir': 'Run Dir',
     'xrayhelper-proxy-tag': 'Proxy Tag',
     'xrayhelper-sub-list': 'Sub-List',
+    'xrayhelper-user-agent': 'User-Agent',
+
+    'clash': 'Config - Clash',
+    'clash-dns-port': 'DNS Port',
+    'clash-template': 'Template',
+
+    'adghome': 'Config - AdGuardHome',
+    'adghome-enable': 'Enable',
+    'adghome-address': 'Address',
+    'adghome-work-dir': 'Work Dir',
+    'adghome-dns-port': 'DNS Port',
 
     'proxy': 'Config - Proxy',
     'proxy-method': 'Method',
@@ -60,10 +73,6 @@ export const setting = {
     'proxy-ap-list': 'Ap List',
     'proxy-ignore-list': 'Ignore List',
     'proxy-intra-list': 'Intra List',
-
-    'clash': 'Config - Clash',
-    'clash-dns-port': 'DNS Port',
-    'clash-template': 'Template',
 
     'cannot-get-config': 'Cannot get XrayHelper config',
     'running-warn': 'Currently the core is running, it is highly recommended to stop it and disable proxy before edit',

@@ -29,42 +29,47 @@
             <van-space/>
             <van-row :gutter="[0, 11]" justify="space-around">
                 <van-col span="11">
-                    <van-button plain type="default" block @click="execUpdateCmd('core')">
+                    <van-button plain hairline type="default" block @click="execUpdateCmd('core')">
                         {{ $t('dashboard.tool-update-core') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
-                    <van-button plain type="default" block @click="execUpdateCmd('geodata')">
+                    <van-button plain hairline type="default" block @click="execUpdateCmd('adghome')">
+                        {{ $t('dashboard.tool-update-adghome') }}
+                    </van-button>
+                </van-col>
+                <van-col span="11">
+                    <van-button plain hairline type="default" block @click="execUpdateCmd('geodata')">
                         {{ $t('dashboard.tool-update-geodata') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
-                    <van-button plain type="default" block @click="execUpdateCmd('subscribe')">
+                    <van-button plain hairline type="default" block @click="execUpdateCmd('subscribe')">
                         {{ $t('dashboard.tool-update-subscribe') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
-                    <van-button plain type="default" block @click="execUpdateCmd('yacd-meta')">
+                    <van-button plain hairline type="default" block @click="execUpdateCmd('yacd-meta')">
                         {{ $t('dashboard.tool-update-yacd-meta') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
-                    <van-button plain type="default" block @click="execUpdateCmd('tun2socks')">
+                    <van-button plain hairline type="default" block @click="execUpdateCmd('tun2socks')">
                         {{ $t('dashboard.tool-update-tun2socks') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
-                    <van-button plain type="default" block @click="switchClicked(false)">
+                    <van-button plain hairline type="default" block @click="switchClicked(false)">
                         {{ $t('dashboard.tool-switch') }}
                     </van-button>
                 </van-col>
                 <van-col v-show="status.coreType!=='mihomo'" span="11">
-                    <van-button plain type="default" block @click="switchClicked(true)">
+                    <van-button plain hairline type="default" block @click="switchClicked(true)">
                         {{ $t('dashboard.tool-switch-custom') }}
                     </van-button>
                 </van-col>
                 <van-col v-show="status.coreType!=='mihomo'" span="11">
-                    <van-button plain type="default" block @click="switchCustomEditClicked">
+                    <van-button plain hairline type="default" block @click="switchCustomEditClicked">
                         {{ $t('dashboard.tool-switch-custom-edit') }}
                     </van-button>
                 </van-col>
@@ -101,10 +106,12 @@
             </van-list>
         </van-popup>
         <!-- stdout receiver -->
-        <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'30%',maxHeight:'85%'}" @closed="refresh">
-            <van-cell :title="$t('dashboard.stdout')" title-style="max-width:100%;" size="large"/>
-            <div class="stdout"><p>{{ stdout }}</p></div>
-        </van-popup>
+        <transition name="van-fade">
+            <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'30%',maxHeight:'85%'}" @closed="refresh">
+                <van-cell :title="$t('dashboard.stdout')" title-style="max-width:100%;" size="large"/>
+                <div class="stdout"><p>{{ stdout }}</p></div>
+            </van-popup>
+        </transition>
     </van-pull-refresh>
 </template>
 
@@ -124,9 +131,9 @@ const switchChooser = ref(false)
 const switchChooserChecked = ref("")
 const switchResult = ref({result: []})
 const switchCustomResult = ref([])
-const stdout = ref("")
+const stdout = ref(i18n.global.t('common.waiting-text'))
 const version = ref("")
-const status = ref({api: "", coreType: "", pid: "", method: "", dataDir: ""})
+const status = ref({api: "", coreType: "mihomo", pid: "", method: "", dataDir: ""})
 const coreStatus = ref(i18n.global.t('dashboard.status-core-status-stopped'))
 
 const switchCustomEditor = ref(false)
@@ -165,9 +172,11 @@ const serviceCmd = [
 const execServiceCmd = (operation) => {
     receiver.value = true
     disablePull.value = true
-    execXrayHelperCmd("service " + operation.value).then(value => {
-        stdout.value = value
-    })
+    setTimeout(() => {
+        execXrayHelperCmd("service " + operation.value).then(value => {
+            stdout.value = value
+        })
+    }, 300)
 }
 const proxyCmd = [
     {text: 'enable', value: 'enable'},
@@ -177,16 +186,20 @@ const proxyCmd = [
 const execProxyCmd = (operation) => {
     receiver.value = true
     disablePull.value = true
-    execXrayHelperCmd("proxy " + operation.value).then(value => {
-        stdout.value = value
-    })
+    setTimeout(() => {
+        execXrayHelperCmd("proxy " + operation.value).then(value => {
+            stdout.value = value
+        })
+    }, 300)
 }
 const execUpdateCmd = (comp) => {
     receiver.value = true
     disablePull.value = true
-    execXrayHelperCmd("update " + comp).then(value => {
-        stdout.value = value
-    })
+    setTimeout(() => {
+        execXrayHelperCmd("update " + comp).then(value => {
+            stdout.value = value
+        })
+    }, 300)
 }
 const switchClicked = async (custom) => {
     disablePull.value = true
@@ -220,10 +233,10 @@ const switchChecked = (custom, idx) => {
 }
 const refresh = () => {
     version.value = ""
-    status.value = {api: "", coreType: "", pid: "", method: "", dataDir: ""}
+    status.value = {api: "", coreType: "mihomo", pid: "", method: "", dataDir: ""}
     running.value = false
     coreStatus.value = i18n.global.t('dashboard.status-core-status-stopped')
-    stdout.value = ""
+    stdout.value = i18n.global.t('common.waiting-text')
     disablePull.value = false
     initVersion()
     initStatus()
@@ -232,7 +245,7 @@ const onRefresh = () => {
     setTimeout(() => {
         refresh()
         loading.value = false
-    }, 1000)
+    }, 500)
 };
 const initVersion = () => {
     execCmd("grep version= " + MODULE_PROP).then(value => {
@@ -255,5 +268,7 @@ initStatus()
 <style>
 .stdout {
     white-space: pre-line;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 </style>

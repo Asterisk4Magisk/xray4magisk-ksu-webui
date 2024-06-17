@@ -23,6 +23,31 @@
                       clickable @click="proxyTagEditor = true"/>
             <van-cell :title="$t('setting.xrayhelper-sub-list')" title-style="max-width:35%;"
                       :value="config.xrayHelper.subList.toString()" clickable @click="subListEditor = true"/>
+            <van-cell :title="$t('setting.xrayhelper-user-agent')" title-style="max-width:35%;" :value="config.xrayHelper.userAgent"
+                      clickable @click="userAgentEditor = true"/>
+        </van-cell-group>
+        <!-- cell-group: clash options -->
+        <van-cell-group :title="$t('setting.clash')" inset>
+            <van-cell :title="$t('setting.clash-dns-port')" title-style="max-width:35%;" :value="config.clash.dnsPort.toString()"
+                      clickable @click="clashDnsPortEditor = true"/>
+            <van-cell :title="$t('setting.clash-template')" title-style="max-width:35%;" :value="config.clash.template"
+                      clickable @click="clashTemplateEditor = true"/>
+        </van-cell-group>
+        <!-- cell-group: adgHome options -->
+        <van-cell-group :title="$t('setting.adghome')" inset>
+            <van-popover :actions="boolc" @select="changeEnableAdgHome" placement="bottom-end">
+                <template #reference>
+                    <van-cell :title="$t('setting.adghome-enable')" title-style="max-width:35%;"
+                              :value="config.adgHome.enable.toString()" clickable/>
+                    <div/>
+                </template>
+            </van-popover>
+            <van-cell :title="$t('setting.adghome-address')" title-style="max-width:35%;" :value="config.adgHome.address"
+                      clickable @click="adgHomeAddressEditor = true"/>
+            <van-cell :title="$t('setting.adghome-work-dir')" title-style="max-width:35%;" :value="config.adgHome.workDir"
+                      clickable @click="adgHomeWorkDirEditor = true"/>
+            <van-cell :title="$t('setting.adghome-dns-port')" title-style="max-width:35%;" :value="config.adgHome.dnsPort.toString()"
+                      clickable @click="adgHomeDnsPortEditor = true"/>
         </van-cell-group>
         <!-- cell-group: proxy options -->
         <van-cell-group :title="$t('setting.proxy')" inset>
@@ -67,13 +92,6 @@
             <van-cell :title="$t('setting.proxy-intra-list')" title-style="max-width:35%;" :value="config.proxy.intraList.toString()"
                       clickable @click="intraListEditor = true"/>
         </van-cell-group>
-        <!-- cell-group: clash options -->
-        <van-cell-group :title="$t('setting.clash')" inset>
-            <van-cell :title="$t('setting.clash-dns-port')" title-style="max-width:35%;" :value="config.clash.dnsPort.toString()"
-                      clickable @click="dnsPortEditor = true"/>
-            <van-cell :title="$t('setting.clash-template')" title-style="max-width:35%;" :value="config.clash.template"
-                      clickable @click="templateEditor = true"/>
-        </van-cell-group>
     </van-pull-refresh>
     <!-- popup: xrayhelper editors -->
     <van-popup v-model:show="corePathEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
@@ -105,6 +123,26 @@
                 </template>
             </van-field>
         </van-list>
+    </van-popup>
+    <van-popup v-model:show="userAgentEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
+        <van-field class="config" :label="$t('setting.xrayhelper-user-agent')" v-model="config.xrayHelper.userAgent"/>
+    </van-popup>
+    <!-- popup: clash editors -->
+    <van-popup v-model:show="clashDnsPortEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
+        <van-field class="config" :label="$t('setting.clash-dns-port')" v-model.number="config.clash.dnsPort"/>
+    </van-popup>
+    <van-popup v-model:show="clashTemplateEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
+        <van-field class="config" :label="$t('setting.clash-template')" v-model="config.clash.template"/>
+    </van-popup>
+    <!-- popup: adgHome editors -->
+    <van-popup v-model:show="adgHomeAddressEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
+        <van-field class="config" :label="$t('setting.adghome-address')" v-model="config.adgHome.address"/>
+    </van-popup>
+    <van-popup v-model:show="adgHomeWorkDirEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
+        <van-field class="config" :label="$t('setting.adghome-work-dir')" v-model="config.adgHome.workDir"/>
+    </van-popup>
+    <van-popup v-model:show="adgHomeDnsPortEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
+        <van-field class="config" :label="$t('setting.adghome-dns-port')" v-model.number="config.adgHome.dnsPort"/>
     </van-popup>
     <!-- popup: proxy editors -->
     <van-popup v-model:show="tproxyPortEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
@@ -176,13 +214,6 @@
             </van-field>
         </van-list>
     </van-popup>
-    <!-- popup: clash editors -->
-    <van-popup v-model:show="dnsPortEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.clash-dns-port')" v-model.number="config.clash.dnsPort"/>
-    </van-popup>
-    <van-popup v-model:show="templateEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.clash-template')" v-model="config.clash.template"/>
-    </van-popup>
 </template>
 
 <script setup>
@@ -197,23 +228,16 @@ const boolc = [
     {text: 'true', value: true},
     {text: 'false', value: false},
 ];
+// xrayHelper
 const coreType = [
     {text: 'v2ray', value: 'v2ray'},
     {text: 'xray', value: 'xray'},
     {text: 'sing-box', value: 'sing-box'},
     {text: 'mihomo', value: 'mihomo'},
+    {text: 'hysteria2', value: 'hysteria2'},
 ];
 const changeCoreType = (core) => {
     config.value.xrayHelper.coreType = core.value
-    saveConfig()
-}
-const method = [
-    {text: 'tproxy', value: 'tproxy'},
-    {text: 'tun', value: 'tun'},
-    {text: 'tun2socks', value: 'tun2socks'},
-];
-const changeMethod = (method) => {
-    config.value.proxy.method = method.value
     saveConfig()
 }
 const corePathEditor = ref(false)
@@ -230,6 +254,28 @@ const deleteSubList = (index) => {
 }
 const addSubList = () => {
     config.value.xrayHelper.subList.push('')
+}
+const userAgentEditor = ref(false)
+// clash
+const clashDnsPortEditor = ref(false)
+const clashTemplateEditor = ref(false)
+// adgHome
+const changeEnableAdgHome = (choose) => {
+    config.value.adgHome.enable = choose.value
+    saveConfig()
+}
+const adgHomeAddressEditor = ref(false)
+const adgHomeWorkDirEditor = ref(false)
+const adgHomeDnsPortEditor = ref(false)
+// proxy
+const method = [
+    {text: 'tproxy', value: 'tproxy'},
+    {text: 'tun', value: 'tun'},
+    {text: 'tun2socks', value: 'tun2socks'},
+];
+const changeMethod = (method) => {
+    config.value.proxy.method = method.value
+    saveConfig()
 }
 const tproxyPortEditor = ref(false)
 const socksPortEditor = ref(false)
@@ -290,8 +336,6 @@ const deleteIntraList = (index) => {
 const addIntraList = () => {
     config.value.proxy.intraList.push('')
 }
-const dnsPortEditor = ref(false)
-const templateEditor = ref(false)
 
 const config = ref()
 
@@ -305,6 +349,17 @@ function baseConfig() {
             runDir: '',
             proxyTag: '',
             subList: [],
+            userAgent: '',
+        },
+        clash: {
+            dnsPort: 0,
+            template: ''
+        },
+        adgHome: {
+            enable: false,
+            address: '',
+            workDir: '',
+            dnsPort: 0
         },
         proxy: {
             method: '',
@@ -318,10 +373,6 @@ function baseConfig() {
             apList: [],
             ignoreList: [],
             intraList: []
-        },
-        clash: {
-            dnsPort: 0,
-            template: ''
         }
     }
 }
@@ -341,7 +392,7 @@ const onRefresh = () => {
     setTimeout(() => {
         initConfig()
         loading.value = false
-    }, 1000)
+    }, 500)
 }
 const initConfig = () => {
     let runningWarn = localStorage.getItem('runningWarn')
@@ -368,8 +419,9 @@ const initConfig = () => {
     config.value = baseConfig()
     getConfig().then(realConfig => {
         Object.assign(config.value.xrayHelper, realConfig.xrayHelper)
-        Object.assign(config.value.proxy, realConfig.proxy)
         Object.assign(config.value.clash, realConfig.clash)
+        Object.assign(config.value.adgHome, realConfig.adgHome)
+        Object.assign(config.value.proxy, realConfig.proxy)
     })
 }
 initConfig()

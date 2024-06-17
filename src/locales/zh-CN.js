@@ -1,9 +1,10 @@
 export const common = {
     'module-name': 'Xray4Magisk',
-    'dashboard-version': "0.0.1-release",
+    'dashboard-version': "0.0.2-release",
     'pulling-text': '下拉即可刷新...',
     'loosing-text': '释放即可刷新...',
     'loading-text': '加载中...',
+    'waiting-text': '等待中...',
     'success-text': '成功',
     'tips': '提示',
     'confirm-text': '确定',
@@ -26,11 +27,12 @@ export const dashboard = {
 
     'tool': '工具',
     'tool-update-core': '更新核心',
+    'tool-update-adghome': '更新 AdGuardHome',
     'tool-update-geodata': '更新 Geodata 数据',
     'tool-update-subscribe': '更新订阅',
     'tool-update-yacd-meta': '更新 Yacd-Meta',
     'tool-update-tun2socks': '更新 Tun2socks',
-    'tool-switch': '切换出栈',
+    'tool-switch': '切换出站',
     'tool-switch-success': '切换成功',
     'tool-switch-failed': '切换失败',
     'tool-switch-custom': '自定义切换',
@@ -45,8 +47,19 @@ export const setting = {
     'xrayhelper-core-config': '核心配置',
     'xrayhelper-data-dir': '数据目录',
     'xrayhelper-run-dir': '临时目录',
-    'xrayhelper-proxy-tag': '出栈代理标签',
+    'xrayhelper-proxy-tag': '出站代理标签',
     'xrayhelper-sub-list': '订阅地址',
+    'xrayhelper-user-agent': 'User-Agent',
+
+    'clash': '配置项 - Clash',
+    'clash-dns-port': 'DNS 端口',
+    'clash-template': '配置模板',
+
+    'adghome': '配置项 - AdGuardHome',
+    'adghome-enable': '启用',
+    'adghome-address': '监听地址',
+    'adghome-work-dir': '工作目录',
+    'adghome-dns-port': 'DNS 端口',
 
     'proxy': '配置项 - Proxy',
     'proxy-method': '代理方式',
@@ -60,10 +73,6 @@ export const setting = {
     'proxy-ap-list': '外部代理接口',
     'proxy-ignore-list': '忽略接口',
     'proxy-intra-list': '标记的内网地址',
-
-    'clash': '配置项 - Clash',
-    'clash-dns-port': 'DNS 端口',
-    'clash-template': '配置模板',
 
     'cannot-get-config': '无法获取 XrayHelper 配置文件',
     'running-warn': '当前核心正在运行，强烈建议停止核心并停用代理后再修改此页配置',
