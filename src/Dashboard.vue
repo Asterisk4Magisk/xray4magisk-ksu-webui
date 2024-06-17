@@ -106,12 +106,10 @@
             </van-list>
         </van-popup>
         <!-- stdout receiver -->
-        <transition name="van-fade">
-            <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'30%',maxHeight:'85%'}" @closed="refresh">
-                <van-cell :title="$t('dashboard.stdout')" title-style="max-width:100%;" size="large"/>
-                <div class="stdout"><p>{{ stdout }}</p></div>
-            </van-popup>
-        </transition>
+        <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'30%',maxHeight:'85%'}" @closed="refresh">
+            <van-cell :title="$t('dashboard.stdout')" title-style="max-width:100%;" size="large"/>
+            <div class="stdout"><p>{{ stdout }}</p></div>
+        </van-popup>
     </van-pull-refresh>
 </template>
 
