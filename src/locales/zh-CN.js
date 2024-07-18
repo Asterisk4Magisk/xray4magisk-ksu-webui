@@ -48,6 +48,7 @@ export const setting = {
     'xrayhelper-data-dir': '数据目录',
     'xrayhelper-run-dir': '临时目录',
     'xrayhelper-proxy-tag': '出站代理标签',
+    'xrayhelper-allow-insecure': '允许不安全节点',
     'xrayhelper-sub-list': '订阅地址',
     'xrayhelper-user-agent': 'User-Agent',
 

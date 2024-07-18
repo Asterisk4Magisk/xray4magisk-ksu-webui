@@ -48,6 +48,7 @@ export const setting = {
     'xrayhelper-data-dir': 'Data Dir',
     'xrayhelper-run-dir': 'Run Dir',
     'xrayhelper-proxy-tag': 'Proxy Tag',
+    'xrayhelper-allow-insecure': 'Allow Insecure',
     'xrayhelper-sub-list': 'Sub-List',
     'xrayhelper-user-agent': 'User-Agent',
 

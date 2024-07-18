@@ -21,6 +21,13 @@
                       clickable @click="runDirEditor = true"/>
             <van-cell :title="$t('setting.xrayhelper-proxy-tag')" title-style="max-width:35%;" :value="config.xrayHelper.proxyTag"
                       clickable @click="proxyTagEditor = true"/>
+            <van-popover :actions="boolc" @select="changeAllowInsecure" placement="bottom-end">
+                <template #reference>
+                    <van-cell :title="$t('setting.xrayhelper-allow-insecure')" title-style="max-width:35%;"
+                              :value="config.xrayHelper.allowInsecure.toString()" clickable/>
+                    <div/>
+                </template>
+            </van-popover>
             <van-cell :title="$t('setting.xrayhelper-sub-list')" title-style="max-width:35%;"
                       :value="config.xrayHelper.subList.toString()" clickable @click="subListEditor = true"/>
             <van-cell :title="$t('setting.xrayhelper-user-agent')" title-style="max-width:35%;" :value="config.xrayHelper.userAgent"
@@ -245,6 +252,10 @@ const coreConfigEditor = ref(false)
 const dataDirEditor = ref(false)
 const runDirEditor = ref(false)
 const proxyTagEditor = ref(false)
+const changeAllowInsecure = (choose) => {
+    config.value.xrayHelper.allowInsecure = choose.value
+    saveConfig()
+}
 const subListEditor = ref(false)
 const editSubList = (value, index) => {
     config.value.xrayHelper.subList[index] = value
@@ -348,6 +359,7 @@ function baseConfig() {
             dataDir: '',
             runDir: '',
             proxyTag: '',
+            allowInsecure: false,
             subList: [],
             userAgent: '',
         },
