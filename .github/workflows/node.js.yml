@@ -24,7 +24,7 @@ jobs:
 
       - name: Build
         run: |
-          npm ci
+          npm install
           npm run build --if-present
 
       - name: Copy Files
@@ -58,4 +58,3 @@ jobs:
           name: xray4magisk-ksu-webui
           path: |
             ./xray4magisk-ksu-webui/*
-    
