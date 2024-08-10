@@ -47,6 +47,8 @@ export const setting = {
     'xrayhelper-core-config': '核心配置',
     'xrayhelper-data-dir': '数据目录',
     'xrayhelper-run-dir': '临时目录',
+    'xrayhelper-cpu-limit': 'CPU 限制',
+    'xrayhelper-mem-limit': '内存限制',
     'xrayhelper-proxy-tag': '出站代理标签',
     'xrayhelper-allow-insecure': '允许不安全节点',
     'xrayhelper-sub-list': '订阅地址',

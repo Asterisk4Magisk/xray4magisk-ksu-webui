@@ -47,6 +47,8 @@ export const setting = {
     'xrayhelper-core-config': 'Core Config',
     'xrayhelper-data-dir': 'Data Dir',
     'xrayhelper-run-dir': 'Run Dir',
+    'xrayhelper-cpu-limit': 'CPU Limit',
+    'xrayhelper-mem-limit': 'Memory Limit',
     'xrayhelper-proxy-tag': 'Proxy Tag',
     'xrayhelper-allow-insecure': 'Allow Insecure',
     'xrayhelper-sub-list': 'Sub-List',
