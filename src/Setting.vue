@@ -19,9 +19,9 @@
                       clickable @click="dataDirEditor = true"/>
             <van-cell :title="$t('setting.xrayhelper-run-dir')" title-style="max-width:35%;" :value="config.xrayHelper.runDir"
                       clickable @click="runDirEditor = true"/>
-            <van-cell :title="$t('setting.xrayhelper-cpu-limit')" title-style="max-width:35%;" :value="config.xrayHelper.cpuLimit"
+            <van-cell :title="$t('setting.xrayhelper-cpu-limit')" title-style="max-width:35%;" :value="config.xrayHelper.cpuLimit.toString()"
                       clickable @click="cpuLimitEditor = true"/>
-            <van-cell :title="$t('setting.xrayhelper-mem-limit')" title-style="max-width:35%;" :value="config.xrayHelper.memLimit"
+            <van-cell :title="$t('setting.xrayhelper-mem-limit')" title-style="max-width:35%;" :value="config.xrayHelper.memLimit.toString()"
                       clickable @click="memLimitEditor = true"/>
             <van-cell :title="$t('setting.xrayhelper-proxy-tag')" title-style="max-width:35%;" :value="config.xrayHelper.proxyTag"
                       clickable @click="proxyTagEditor = true"/>
@@ -118,10 +118,10 @@
         <van-field class="config" :label="$t('setting.xrayhelper-run-dir')" v-model="config.xrayHelper.runDir"/>
     </van-popup>
     <van-popup v-model:show="cpuLimitEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-cpu-limit')" v-model="config.xrayHelper.cpuLimit"/>
+        <van-field class="config" :label="$t('setting.xrayhelper-cpu-limit')" v-model.number="config.xrayHelper.cpuLimit"/>
     </van-popup>
     <van-popup v-model:show="memLimitEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-mem-limit')" v-model="config.xrayHelper.memLimit"/>
+        <van-field class="config" :label="$t('setting.xrayhelper-mem-limit')" v-model.number="config.xrayHelper.memLimit"/>
     </van-popup>
     <van-popup v-model:show="proxyTagEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
         <van-field class="config" :label="$t('setting.xrayhelper-proxy-tag')" v-model="config.xrayHelper.proxyTag"/>
@@ -370,8 +370,8 @@ function baseConfig() {
             coreConfig: '',
             dataDir: '',
             runDir: '',
-            cpuLimit: '',
-            memLimit: '',
+            cpuLimit: 0,
+            memLimit: 0,
             proxyTag: '',
             allowInsecure: false,
             subList: [],
