@@ -1,6 +1,6 @@
 export const common = {
     'module-name': 'Xray4Magisk',
-    'dashboard-version': "0.0.3-release",
+    'dashboard-version': "0.0.4-release",
     'pulling-text': '下拉即可刷新...',
     'loosing-text': '释放即可刷新...',
     'loading-text': '加载中...',
