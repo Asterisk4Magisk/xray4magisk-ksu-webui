@@ -43,6 +43,8 @@
                       clickable @click="clashDnsPortEditor = true"/>
             <van-cell :title="$t('setting.clash-template')" title-style="max-width:35%;" :value="config.clash.template"
                       clickable @click="clashTemplateEditor = true"/>
+            <van-cell :title="$t('setting.clash-api')" title-style="max-width:35%;" :value="config.clash.api"
+                      clickable @click="clashApiEditor = true"/>
         </van-cell-group>
         <!-- cell-group: adgHome options -->
         <van-cell-group :title="$t('setting.adghome')" inset>
@@ -150,6 +152,9 @@
     </van-popup>
     <van-popup v-model:show="clashTemplateEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
         <van-field class="config" :label="$t('setting.clash-template')" v-model="config.clash.template"/>
+    </van-popup>
+    <van-popup v-model:show="clashApiEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
+        <van-field class="config" :label="$t('setting.clash-api')" v-model="config.clash.api"/>
     </van-popup>
     <!-- popup: adgHome editors -->
     <van-popup v-model:show="adgHomeAddressEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
@@ -282,6 +287,7 @@ const userAgentEditor = ref(false)
 // clash
 const clashDnsPortEditor = ref(false)
 const clashTemplateEditor = ref(false)
+const clashApiEditor = ref(false)
 // adgHome
 const changeEnableAdgHome = (choose) => {
     config.value.adgHome.enable = choose.value
