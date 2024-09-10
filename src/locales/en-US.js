@@ -10,6 +10,7 @@ export const common = {
     'confirm-text': 'Confirm',
     'ignore-text': 'Don\'t show again',
     'dashboard': "Dashboard",
+    'manage': "Panel",
     'setting': "Setting"
 }
 export const dashboard = {
@@ -40,6 +41,9 @@ export const dashboard = {
 
     'stdout': 'Output',
 }
+export const manage = {
+    'not-support': 'Not supporting the current core type.',
+}
 export const setting = {
     'xrayhelper': 'Config - XrayHelper',
     'xrayhelper-core-type': 'Core Type',
@@ -57,6 +61,7 @@ export const setting = {
     'clash': 'Config - Clash',
     'clash-dns-port': 'DNS Port',
     'clash-template': 'Template',
+    'clash-api': 'Panel URL',
 
     'adghome': 'Config - AdGuardHome',
     'adghome-enable': 'Enable',

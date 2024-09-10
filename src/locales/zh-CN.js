@@ -10,6 +10,7 @@ export const common = {
     'confirm-text': '确定',
     'ignore-text': '不再提醒',
     'dashboard': "仪表盘",
+    'manage': "面板",
     'setting': "设置"
 }
 export const dashboard = {
@@ -40,6 +41,9 @@ export const dashboard = {
 
     'stdout': '输出',
 }
+export const manage = {
+    'not-support': '暂不支持当前核心',
+}
 export const setting = {
     'xrayhelper': '配置项 - XrayHelper',
     'xrayhelper-core-type': '核心类型',
@@ -57,6 +61,7 @@ export const setting = {
     'clash': '配置项 - Clash',
     'clash-dns-port': 'DNS 端口',
     'clash-template': '配置模板',
+    'clash-api': '面板地址',
 
     'adghome': '配置项 - AdGuardHome',
     'adghome-enable': '启用',
