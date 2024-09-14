@@ -236,16 +236,22 @@
             </van-field>
         </van-list>
     </van-popup>
+    <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'30%',maxHeight:'85%'}" >
+        <van-cell :title="$t('dashboard.stdout')" title-style="max-width:100%;" size="large"/>
+        <div class="stdout"><p>{{ stdout }}</p></div>
+    </van-popup>
 </template>
 
 <script setup>
 import {ref} from 'vue'
 import i18n from "./locales/i18n.js"
 import YAML from "yaml"
-import {callApi, readFile, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
+import {callApi, readFile,execCmdWithErrNo,execXrayHelperCmd, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
 
 defineProps(["theme"])
 const loading = ref(false)
+const stdout = ref(i18n.global.t('common.waiting-text'))
+const receiver = ref(false)
 const boolc = [
     {text: 'true', value: true},
     {text: 'false', value: false},
@@ -261,6 +267,39 @@ const coreType = [
 const changeCoreType = (core) => {
     config.value.xrayHelper.coreType = core.value
     saveConfig()
+    showConfirmDialog({
+        message: i18n.global.t('setting.switch-core')
+    })
+    .then(() => {
+        const basePath='/data/adb/xray'
+        const binPath=`${basePath}/bin/${core.value}`
+        config.value.xrayHelper.corePath=binPath
+        switch (core.value) {
+            case 'v2ray':
+                config.value.xrayHelper.coreConfig = `${basePath}/v2rayconfs/config.json`
+                break;
+            case 'xray':
+                config.value.xrayHelper.coreConfig = `${basePath}/confs/`
+                break;
+            case 'sing-box':
+                config.value.xrayHelper.coreConfig = `${basePath}/singconfs/`
+                break;
+            case 'mihomo':
+                config.value.xrayHelper.coreConfig = `${basePath}/mihomoconfs/`
+                config.value.clash.template = `${basePath}/mihomoconfs/template.yaml`
+                break;
+            case 'hysteria2':
+                config.value.xrayHelper.coreConfig = `${basePath}/hy2confs/config.yaml`
+                break;
+            default:
+                break;
+        }
+        saveConfig()
+        checkCoreBin(binPath)
+    })
+    .catch(() => {
+        () => resolve(true)
+    });
 }
 const corePathEditor = ref(false)
 const coreConfigEditor = ref(false)
@@ -309,6 +348,24 @@ const changeMethod = (method) => {
 const tproxyPortEditor = ref(false)
 const socksPortEditor = ref(false)
 const tunDeviceEditor = ref(false)
+
+const checkCoreBin = (corePath) => {
+    execCmdWithErrNo(`ls ${corePath}`).then(errno => {
+        if(errno!=0){
+            showConfirmDialog({
+                message: i18n.global.t('setting.core-not-found'),
+            }).then(() => {
+            // on close
+                receiver.value = true
+                setTimeout(() => {
+                    execXrayHelperCmd("update core").then(value => {
+                        stdout.value = value
+                    })
+                }, 300)
+            }).catch(() => {() => resolve(true)});
+        }
+    })
+}
 const changeEnableIPv6 = (choose) => {
     config.value.proxy.enableIPv6 = choose.value
     saveConfig()

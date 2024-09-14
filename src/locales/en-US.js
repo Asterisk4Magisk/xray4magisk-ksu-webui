@@ -43,6 +43,11 @@ export const dashboard = {
 }
 export const manage = {
     'not-support': 'Not supporting the current core type.',
+    'no-more': 'No more.',
+    'route-manage': 'Routing',
+    'load-balancing': 'Balancer',
+    'speedtest': 'Speedtest',
+    'switch': 'Switch',
 }
 export const setting = {
     'xrayhelper': 'Config - XrayHelper',
@@ -84,4 +89,6 @@ export const setting = {
 
     'cannot-get-config': 'Cannot get XrayHelper config',
     'running-warn': 'Currently the core is running, it is highly recommended to stop it and disable proxy before edit',
+    'switch-core': 'Detected core switching. Whether to synchronously switch to the default configuration?',
+    'core-not-found':'Detected that the current core does not exist. Do you want to start downloading now?'
 }

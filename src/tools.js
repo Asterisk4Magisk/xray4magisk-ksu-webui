@@ -4,6 +4,16 @@ import {Buffer} from 'buffer/'
 export const XRAYHELPER = "/data/adb/xray/bin/xrayhelper"
 export const XRAYHELPER_CONFIG = "/data/adb/xray/xrayhelper.yml"
 
+export const execCmdWithErrNo = async (cmd) => {
+    console.info(cmd)
+    const {errno, stdout,stderr} = await exec(cmd, {cwd: '/'})
+    if (errno === 0) {
+        console.log(stdout)
+    }else{
+        console.log(stderr)
+    }
+    return errno
+}
 export const execCmd = async (cmd) => {
     console.info(cmd)
     const {errno, stdout} = await exec(cmd, {cwd: '/'})
