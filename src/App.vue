@@ -17,7 +17,7 @@
         </router-view>
         <van-tabbar route placeholder>
             <van-tabbar-item replace to="/" icon="home-o">{{ $t('common.dashboard') }}</van-tabbar-item>
-            <van-tabbar-item replace to="/manage" icon="shop-o">{{ $t('common.manage') }}</van-tabbar-item>
+            <van-tabbar-item replace to="/manage" icon="apps-o">{{ $t('common.manage') }}</van-tabbar-item>
             <van-tabbar-item replace to="/setting" icon="setting-o">{{ $t('common.setting') }}</van-tabbar-item>
         </van-tabbar>
     </van-config-provider>

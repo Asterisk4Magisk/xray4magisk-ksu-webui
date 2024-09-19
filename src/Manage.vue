@@ -1,5 +1,5 @@
 <template>
-    <!-- clash或者singbox显示外部连接，xray模仿v2rayNG做一个丐版 -->
+    <!-- clash显示外部连接，xray模仿v2rayNG做一个丐版 -->
     <iframe v-if="iframeShow" :src="panelUrl" style="min-height: 85vh;min-width: 100vw;" frameborder="no" border="0"
         marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
     <div v-if="xrayUIShow">
@@ -259,11 +259,11 @@ const debounce = (func, delay = 1000, immediate = false) => {
         }, delay)
     }
 }
-//数组分割，以5个为一组，不满一组，以实际剩余为主
+//数组分割，以50个为一组，不满一组，以实际剩余为主
 function splitArray(arr) {
     const result = [];
-    for (let i = 0; i < arr.length; i += 5) {
-        const chunk = arr.slice(i, i + 5);
+    for (let i = 0; i < arr.length; i += 50) {
+        const chunk = arr.slice(i, i + 50);
         if (chunk.length > 0) {
             result.push(chunk);
         }
@@ -389,13 +389,13 @@ function startSpeedtest() {
                         item.speedtestLoading = false;
                         ping = result.realping;
 
-                        if (ping > -1 && ping < 800) {
+                        if (ping > -1 && ping < 500) {
                             color = '#07c160'
-                        } else if (ping < 2000) {
+                        } else if (ping < 1000) {
                             color = '#d4b75c'
-                        } else if (ping < 4000) {
+                        } else if (ping < 2000) {
                             color = '#e67f3c'
-                        } else if (ping > 4000) {
+                        } else if (ping > 3000) {
                             color = '#ee0a24'
                         }
                         item.ping = `${ping} ms`;
@@ -539,9 +539,9 @@ const initStatus = () => {
             panelUrl.value = api_url;
         }
         let coreType = realConfig.xrayHelper.coreType;
-        if (coreType === "sing-box" || coreType === "mihomo") {
+        if (coreType === "mihomo") {
             iframeShow.value = true;
-        } else if (coreType === "xray") {
+        } else if (coreType === "xray"||coreType === "sing-box") {
             iframeShow.value = false;
             xrayUIShow.value = true;
             onLoad();
