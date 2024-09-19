@@ -45,9 +45,16 @@ export const manage = {
     'not-support': 'Not supporting the current core type.',
     'no-more': 'No more.',
     'route-manage': 'Routing',
+    'more-setting': 'Settings',
     'load-balancing': 'Balancer',
     'speedtest': 'Speedtest',
     'switch': 'Switch',
+    'remarks': 'Remarks',
+    'search': 'Querying',
+    'placeholder-text': 'Please enter an Remarks.',
+    'speedtest-fail': 'The speed measurement failed and an exception occurred.',
+    'speedtest-reject': 'Wait patiently until the speed measurement of other nodes is completed before continuing.',
+    'speedtest-all-warn': 'All nodes will be speed tested soon to prevent the airport from being blocked! Use with caution (ps: not recommended. Too many nodes will freeze the page, and starting multi-process speed testing will consume power). Confirm to continue?',
 }
 export const setting = {
     'xrayhelper': 'Config - XrayHelper',
@@ -90,5 +97,7 @@ export const setting = {
     'cannot-get-config': 'Cannot get XrayHelper config',
     'running-warn': 'Currently the core is running, it is highly recommended to stop it and disable proxy before edit',
     'switch-core': 'Detected core switching. Whether to synchronously switch to the default configuration?',
-    'core-not-found':'Detected that the current core does not exist. Do you want to start downloading now?'
+    'core-not-found':'Detected that the current core does not exist. Do you want to start downloading now?',
+    'refresh-proxy':'The configuration file has been reloaded.'
+
 }

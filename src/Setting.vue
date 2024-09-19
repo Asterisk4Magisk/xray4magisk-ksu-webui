@@ -476,6 +476,15 @@ const getConfig = async () => {
 
 const saveConfig = () => {
     saveFile(YAML.stringify(config.value, {indent: 4}), XRAYHELPER_CONFIG)
+    setTimeout(() => {
+        callApi("get status").then(value => {
+            if (value.pid.length > 0) {
+                execXrayHelperCmd("proxy refresh").then(value2 => {
+                    showToast(i18n.global.t('setting.refresh-proxy'))
+                })
+            }
+        })
+    }, 50)
 }
 const onRefresh = () => {
     setTimeout(() => {

@@ -45,9 +45,16 @@ export const manage = {
     'not-support': '暂不支持当前核心',
     'no-more': '没有更多了',
     'route-manage': '路由规则',
+    'more-setting': '更多设置',
     'load-balancing': '负载均衡',
     'speedtest': '测速',
     'switch': '切换',
+    'remarks': '别名',
+    'search': '查询中',
+    'placeholder-text': '请输入别名',
+    'speedtest-fail': '测速失败，发生异常。',
+    'speedtest-reject': '耐心等待其他节点测速结束后再继续。',
+    'speedtest-all-warn': '即将测速所有节点，以防机场封号！谨慎使用(ps:不推荐，节点多页面会卡死,而且启动多进程测速会耗电)，确认继续?',
 }
 export const setting = {
     'xrayhelper': '配置项 - XrayHelper',
@@ -90,5 +97,6 @@ export const setting = {
     'cannot-get-config': '无法获取 XrayHelper 配置文件',
     'running-warn': '当前核心正在运行，强烈建议停止核心并停用代理后再修改此页配置',
     'switch-core': '检测到核心切换，是否同步切换为默认配置?',
-    'core-not-found':'检测到当前核心不存在，是否现在开始下载?'
+    'core-not-found':'检测到当前核心不存在，是否现在开始下载?',
+    'refresh-proxy':'配置文件已经重新载入。'
 }
