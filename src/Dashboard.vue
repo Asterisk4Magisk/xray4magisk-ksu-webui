@@ -172,6 +172,15 @@ const execServiceCmd = (operation) => {
     disablePull.value = true
     setTimeout(() => {
         execXrayHelperCmd("service " + operation.value).then(value => {
+            if(operation.value=="start"||operation.value=="restart"){
+                execXrayHelperCmd("proxy refresh").then(value2 => {
+                    stdout.value=value+'\n'+value2;
+                })
+            }else if (operation.value=="stop"){
+                execXrayHelperCmd("proxy disable").then(value2 => {
+                    stdout.value=value+'\n'+value2;
+                })
+            }
             stdout.value = value
         })
     }, 300)
