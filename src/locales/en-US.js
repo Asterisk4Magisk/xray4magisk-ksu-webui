@@ -33,11 +33,10 @@ export const dashboard = {
     'tool-update-subscribe': 'Update Subscribe',
     'tool-update-yacd-meta': 'Update Yacd-Meta',
     'tool-update-tun2socks': 'Update Tun2socks',
-    'tool-switch': 'Switch',
+    'tool-switch': 'Switch Clash Subscribe',
     'tool-switch-success': 'Switch success',
     'tool-switch-failed': 'Switch failed',
-    'tool-switch-custom': 'Switch Custom',
-    'tool-switch-custom-edit': 'Edit Switch Custom',
+    'tool-switch-custom-edit': 'Edit Custom Node',
 
     'stdout': 'Output',
 }

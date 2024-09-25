@@ -3,7 +3,7 @@
     <iframe v-if="iframeShow" :src="panelUrl" style="min-height: 85vh;min-width: 100vw;" frameborder="no" border="0"
         marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
     <div v-if="xrayUIShow">
-        <van-nav-bar style="top: 46px;" fixed="true">
+        <van-nav-bar style="top: 46px;" fixed>
             <template #left>
                 <van-popover v-model:show="showPopover" :actions="actions" @select="onSelect" placement="bottom-start">
                     <template #reference>
@@ -32,8 +32,8 @@
                 </van-space>
             </template>
         </van-nav-bar>
-
-        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh" :pulling-text="$t('common.pulling-text')"
+                          :loosing-text="$t('common.loosing-text')" :loading-text="$t('common.loading-text')">
             <van-list v-model:loading="loading" :finished="finished" :finished-text="i18n.global.t('manage.no-more')"
                 @load="onLoad">
                 <van-checkbox-group v-model="checked">
@@ -101,49 +101,6 @@ const showNodeList = ref([])
 const speedTestIdList = ref([])
 let allowSpeedtest = true;
 const allNodeList = ref([])
-const speedtestConfig = ref({
-    "log": {
-        "access": "",
-        "error": "",
-        "loglevel": "warning"
-    },
-    "inbounds": [
-
-    ],
-    "outbounds": [
-        {
-            "tag": "direct",
-            "protocol": "freedom",
-            "settings": {}
-        },
-        {
-            "tag": "block",
-            "protocol": "blackhole",
-            "settings": {
-                "response": {
-                    "type": "http"
-                }
-            }
-        }
-    ],
-    "routing": {
-        "domainStrategy": "IPIfNonMatch",
-        "rules": [
-        ]
-    }
-})
-const inbound = ref({
-    "tag": "",
-    "port": 0,
-    "listen": "127.0.0.1",
-    "protocol": "http"
-})
-const rule = ref({
-    "type": "field",
-    "inboundTag": [
-    ],
-    "outboundTag": ""
-})
 
 const showPopover = ref(false);
 const actions = [

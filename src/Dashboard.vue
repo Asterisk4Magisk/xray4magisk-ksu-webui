@@ -58,23 +58,18 @@
                         {{ $t('dashboard.tool-update-tun2socks') }}
                     </van-button>
                 </van-col>
-                <van-col span="11">
+                <van-col v-if="status.coreType==='mihomo'" span="11">
                     <van-button plain hairline type="default" block @click="switchClicked(false)">
                         {{ $t('dashboard.tool-switch') }}
                     </van-button>
                 </van-col>
-                <van-col v-show="status.coreType!=='mihomo'" span="11">
-                    <van-button plain hairline type="default" block @click="switchClicked(true)">
-                        {{ $t('dashboard.tool-switch-custom') }}
-                    </van-button>
-                </van-col>
-                <van-col v-show="status.coreType!=='mihomo'" span="11">
+                <van-col v-if="status.coreType!=='mihomo'" span="11">
                     <van-button plain hairline type="default" block @click="switchCustomEditClicked">
                         {{ $t('dashboard.tool-switch-custom-edit') }}
                     </van-button>
                 </van-col>
             </van-row>
-            <van-space v-show="status.coreType!=='mihomo'"/>
+            <van-space/>
         </van-cell-group>
         <!-- switch chooser -->
         <van-popup v-model:show="switchChooser" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="refresh">
@@ -106,7 +101,7 @@
             </van-list>
         </van-popup>
         <!-- stdout receiver -->
-        <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'30%',maxHeight:'85%'}" @closed="refresh">
+        <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'35%',maxHeight:'85%'}" @closed="refresh">
             <van-cell :title="$t('dashboard.stdout')" title-style="max-width:100%;" size="large"/>
             <div class="stdout"><p>{{ stdout }}</p></div>
         </van-popup>

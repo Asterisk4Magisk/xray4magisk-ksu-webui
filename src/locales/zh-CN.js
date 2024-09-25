@@ -33,11 +33,10 @@ export const dashboard = {
     'tool-update-subscribe': '更新订阅',
     'tool-update-yacd-meta': '更新 Yacd-Meta',
     'tool-update-tun2socks': '更新 Tun2socks',
-    'tool-switch': '切换出站',
+    'tool-switch': '切换 Clash 订阅',
     'tool-switch-success': '切换成功',
     'tool-switch-failed': '切换失败',
-    'tool-switch-custom': '自定义切换',
-    'tool-switch-custom-edit': '编辑自定义切换',
+    'tool-switch-custom-edit': '编辑自定义节点',
 
     'stdout': '输出',
 }
