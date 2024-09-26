@@ -76,10 +76,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import {ref} from 'vue'
 import i18n from "./locales/i18n.js"
 import YAML from "yaml"
-import { callApi, readFile, saveFile, XRAYHELPER_CONFIG } from "./tools.js"
+import {callApi, readFile, XRAYHELPER_CONFIG} from "./tools.js"
 
 defineProps(["theme"])
 
@@ -182,7 +182,7 @@ const searchNode = (text) => {
         try {
             console.info(`allNodeList:${allNodeList.value.length}`)
             showNodeList.value.splice(0, showNodeList.value.length);
-            if (text == '') {
+            if (text === '') {
                 showNodeList.value.push(...allNodeList.value);
             } else {
                 const filterArr = allNodeList.value.filter(item => item.remarks.includes(text));
@@ -216,61 +216,6 @@ const debounce = (func, delay = 1000, immediate = false) => {
         }, delay)
     }
 }
-//数组分割，以50个为一组，不满一组，以实际剩余为主
-function splitArray(arr) {
-    const result = [];
-    for (let i = 0; i < arr.length; i += 50) {
-        const chunk = arr.slice(i, i + 50);
-        if (chunk.length > 0) {
-            result.push(chunk);
-        }
-    }
-    return result;
-}
-// 并发请求函数
-const concurrencyRequest = (urls, maxNum) => {
-    return new Promise((resolve) => {
-        if (urls.length === 0) {
-            resolve([]);
-            return;
-        }
-        const results = [];
-        let index = 0; // 下一个请求的下标
-        let count = 0; // 当前请求完成的数量
-
-        // 发送请求
-        async function request() {
-            if (index === urls.length) return;
-            const i = index; // 保存序号，使result和urls相对应
-            const url = urls[index];
-            index++;
-            console.log(url);
-            try {
-                speedTestIdList.value = [...url];
-                const resp = await startSpeedtest();
-                // resp 加入到results
-                results[i] = resp;
-            } catch (err) {
-                // err 加入到results
-                results[i] = err;
-            } finally {
-                count++;
-                // 判断是否所有的请求都已完成
-                if (count === urls.length) {
-                    console.log('完成了');
-                    resolve(results);
-                }
-                request();
-            }
-        }
-
-        // maxNum和urls.length取最小进行调用
-        const times = Math.min(maxNum, urls.length);
-        for (let i = 0; i < times; i++) {
-            request();
-        }
-    })
-}
 // const bigArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 // const splitArrays = splitArray(bigArray);
 // console.log(splitArrays);
@@ -284,27 +229,19 @@ const confirmSpeedtestAll = () => {
     } else {
         showConfirmDialog({
             message: i18n.global.t('manage.speedtest-all-warn'),
-        })
-            .then(() => {
-                speedtestAll()
-            })
-            .catch(() => {
-                // on cancel
-            });
+        }).then(() => {
+            speedtestAll()
+        }).catch(() => {
+            // on cancel
+        });
     }
-
 }
 const speedtestAll = async () => {
     // on confirm
     // const length = 100;
     const length = showNodeList.value.length;
-    const testList = [...Array.from({ length }, (_, index) => index)];
-
-    const splitArrays = splitArray(testList);
-    for (const si in splitArrays) {
-        speedTestIdList.value = [...splitArrays[si]];
-        await startSpeedtest();
-    }
+    speedTestIdList.value = [...Array.from({length}, (_, index) => index)];
+    await startSpeedtest();
     // console.log(splitArrays);
     //     concurrencyRequest(splitArrays, 1).then(res => {
     //         console.log(res);
@@ -312,8 +249,7 @@ const speedtestAll = async () => {
 }
 // 测速调用
 function startSpeedtest() {
-    debugger;
-    return new Promise(resolve => {
+    return new Promise(() => {
         let nowTest = [...speedTestIdList.value];
         console.info('startSpeedtest')
         if (allowSpeedtest) {
@@ -330,55 +266,49 @@ function startSpeedtest() {
                 paramIds.push({ 'index': "" + sIndex, 'sIndex': index })
             }
             let color = '#646566';
-            if (nowTest.length == 0) {
+            if (nowTest.length === 0) {
                 allowSpeedtest = true;
                 return;
             }
             allowSpeedtest = false;
-            setTimeout(() => {
-                callApi(`misc realping ${nowTest.join(' ')}`).then(value => {
-                    const mergedArr = paramIds.map((result, obj) => {
-                        return { ...result, ...value.result[obj] }
-                    });
-                    for (let result of mergedArr) {
-                        let ping = '-1';
-                        let item = showNodeList.value[result.sIndex];
-                        item.speedtestLoading = false;
-                        ping = result.realping;
+            callApi(`misc realping ${nowTest.join(' ')}`).then(value => {
+                const mergedArr = paramIds.map((result, obj) => {
+                    return { ...result, ...value.result[obj] }
+                });
+                for (let result of mergedArr) {
+                    let ping = '-1';
+                    let item = showNodeList.value[result.sIndex];
+                    item.speedtestLoading = false;
+                    ping = result.realping;
 
-                        if (ping > -1 && ping < 500) {
-                            color = '#07c160'
-                        } else if (ping < 1000) {
-                            color = '#d4b75c'
-                        } else if (ping < 2000) {
-                            color = '#e67f3c'
-                        } else if (ping > 3000) {
-                            color = '#ee0a24'
-                        }
-                        item.ping = `${ping} ms`;
-                        item.color = color;
-                        item.show = true;
+                    if (ping > -1 && ping < 500) {
+                        color = '#07c160'
+                    } else if (ping < 1000) {
+                        color = '#d4b75c'
+                    } else if (ping < 2000) {
+                        color = '#e67f3c'
+                    } else if (ping > 3000) {
+                        color = '#ee0a24'
                     }
-                }).catch(ex => {
-                    showToast(i18n.global.t('manage.speedtest-fail') + ex)
-                }).finally(() => {
-                    for (let realItemId of nowTest) {
-                        showNodeList.value[realItemId].speedtestLoading = false;
-                    }
-                    nowTest.length = 0;
-                    allowSpeedtest = true;
-                })
-            }, 50);
-
+                    item.ping = `${ping} ms`;
+                    item.color = color;
+                    item.show = true;
+                }
+            }).catch(ex => {
+                showToast(i18n.global.t('manage.speedtest-fail') + ex)
+            }).finally(() => {
+                for (let realItemId of nowTest) {
+                    showNodeList.value[realItemId].speedtestLoading = false;
+                }
+                nowTest.length = 0;
+                allowSpeedtest = true;
+            })
         } else {
             for (let realItemId of nowTest) {
                 showNodeList.value[realItemId].speedtestLoading = false;
             }
             showToast(i18n.global.t('manage.speedtest-reject'))
         }
-        setTimeout(() => {
-            resolve('done');
-        }, 500)
     })
 
     //     item.speedtestLoading = false;
@@ -403,9 +333,9 @@ const clickSpeedtest = (item, index) => {
 //TODO 左上角菜单，未实现
 const onSelect = (action) => {
     console.info(action)
-    if (action.value == 'routing') {
+    if (action.value === 'routing') {
 
-    } else if (action.value == 'setting') {
+    } else if (action.value === 'setting') {
 
     } else {
         if (!checkBoxShow.value) {
@@ -463,11 +393,7 @@ const convertObject = (arr, custom) => {
         obj['custom'] = custom;
         obj['hashId'] = cyrb53(JSON.stringify(obj));
         // TODO 可能会出现多个相同节点？
-        if (lastSelected == obj.hashId) {
-            obj['selected'] = true;
-        } else {
-            obj['selected'] = false;
-        }
+        obj['selected'] = lastSelected === obj.hashId;
         convertArr.push(obj);
     }
     return convertArr;
