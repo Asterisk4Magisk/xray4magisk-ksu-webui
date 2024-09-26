@@ -4,7 +4,7 @@ import {Buffer} from 'buffer/'
 export const XRAYHELPER = "/data/adb/xray/bin/xrayhelper"
 export const XRAYHELPER_CONFIG = "/data/adb/xray/xrayhelper.yml"
 
-export const execCmdWithErrNo = async (cmd) => {
+export const execCmdWithExitCode = async (cmd) => {
     console.info(cmd)
     const {errno, stdout,stderr} = await exec(cmd, {cwd: '/'})
     if (errno === 0) {
@@ -51,15 +51,13 @@ export const callApi = async (api) => {
     } else if (!(api instanceof Array)) {
         api = api.split(" ")
     }
-    let params = ["-c", XRAYHELPER, "-c", XRAYHELPER_CONFIG, "api"]
+    let params = ["-c", XRAYHELPER, "-c", XRAYHELPER_CONFIG, "-t", "3", "api"]
     params.push(...api)
     let process = spawn('su', params);
     process.stdout.on('data', (data) => {
-        debugger
         result.data = JSON.parse(data)
     })
     process.on('exit', () => {
-        debugger
         result.exited = true
     })
     while (true) {

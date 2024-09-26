@@ -53,7 +53,7 @@ export const manage = {
     'placeholder-text': '请输入别名',
     'speedtest-fail': '测速失败，发生异常。',
     'speedtest-reject': '耐心等待其他节点测速结束后再继续。',
-    'speedtest-all-warn': '即将测速所有节点，以防机场封号！谨慎使用(ps:不推荐，节点多页面会卡死)，确认继续?',
+    'speedtest-all-warn': '即将测速所有节点，以防机场封号！谨慎使用，确认继续?',
 }
 export const setting = {
     'xrayhelper': '配置项 - XrayHelper',

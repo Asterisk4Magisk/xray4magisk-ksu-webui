@@ -39,28 +39,22 @@
                 <van-checkbox-group v-model="checked">
                     <van-cell-group style="top: 46px;">
                         <van-cell v-for="(item, index) in showNodeList" :key="index" center>
-                            <template #icon>
-                                <!-- <van-icon size="30px" v-show="item.balancing" name="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAwRUUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGQ9Im0xMiAxM2w1IDQuNU0xMiAxM2wtNSA0LjVtNS00LjVWOG02LjE5MiA4LjQ0NmMuNTE2LS4yOTguNzc0LS40NDYgMS4wNTgtLjQ0NnMuNTQyLjE0OCAxLjA1OC40NDZsLjYzNC4zNjRjLjUxNi4yOTcuNzc0LjQ0NS45MTYuNjlzLjE0Mi41NDIuMTQyIDEuMTM2di43MjhjMCAuNTk0IDAgLjg5MS0uMTQyIDEuMTM2cy0uNC4zOTMtLjkxNi42OWwtLjYzNC4zNjRjLS41MTYuMjk4LS43NzQuNDQ2LTEuMDU4LjQ0NnMtLjU0Mi0uMTQ4LTEuMDU4LS40NDZsLS42MzQtLjM2NGMtLjUxNi0uMjk3LS43NzQtLjQ0NS0uOTE2LS42OXMtLjE0Mi0uNTQyLS4xNDItMS4xMzZ2LS43MjhjMC0uNTk0IDAtLjg5MS4xNDItMS4xMzZzLjQtLjM5My45MTYtLjY5em0tMTQuNSAwYy41MTYtLjI5OC43NzQtLjQ0NiAxLjA1OC0uNDQ2cy41NDIuMTQ4IDEuMDU4LjQ0NmwuNjM0LjM2NGMuNTE2LjI5Ny43NzQuNDQ1LjkxNi42OXMuMTQyLjU0Mi4xNDIgMS4xMzZ2LjcyOGMwIC41OTQgMCAuODkxLS4xNDIgMS4xMzZzLS40LjM5My0uOTE2LjY5bC0uNjM0LjM2NGMtLjUxNi4yOTgtLjc3NC40NDYtMS4wNTguNDQ2cy0uNTQyLS4xNDgtMS4wNTgtLjQ0NmwtLjYzNC0uMzY0Yy0uNTE2LS4yOTctLjc3NC0uNDQ1LS45MTYtLjY5UzIgMTkuOTU4IDIgMTkuMzY0di0uNzI4YzAtLjU5NCAwLS44OTEuMTQyLTEuMTM2cy40LS4zOTMuOTE2LS42OXptNy4yNS0xNEMxMS40NTggMi4xNDkgMTEuNzE1IDIgMTIgMnMuNTQyLjE0OSAxLjA1OS40NDZsLjYzMy4zNjRjLjUxNi4yOTcuNzc0LjQ0NS45MTYuNjlzLjE0Mi41NDIuMTQyIDEuMTM2di43MjhjMCAuNTk0IDAgLjg5MS0uMTQyIDEuMTM2cy0uNC4zOTMtLjkxNy42OWwtLjYzMy4zNjRDMTIuNTQzIDcuODUxIDEyLjI4NSA4IDEyIDhzLS41NDItLjE0OS0xLjA1OS0uNDQ2bC0uNjMzLS4zNjRjLS41MTYtLjI5Ny0uNzc0LS40NDUtLjkxNi0uNjlzLS4xNDItLjU0Mi0uMTQyLTEuMTM2di0uNzI4YzAtLjU5NCAwLS44OTEuMTQyLTEuMTM2cy40LS4zOTMuOTE3LS42OXoiIGNvbG9yPSIjMDAwMEVFIi8+PC9zdmc+" /> -->
-                                <van-icon name="link-o" v-show="item.selected" color="#07c160" size="30px" />
-                            </template>
                             <template #title>
-                                <span class="custom-title">{{ item.remarks }}</span>
+                                <span class="custom-title">{{ item.remarks }}</span><br/>
                             </template>
                             <template #label>
-                                <van-space wrap>
+                                <van-space fill>
                                     <van-tag type="primary">{{ item.type }}</van-tag>
-                                    <van-tag :color="item.color" v-show:="item.show">{{ item.ping }}</van-tag>
+                                    <van-tag :color="item.color" v-show="item.show">{{ item.ping }}</van-tag>
                                 </van-space>
-                                <!-- <span class="custom-title">{{ item.Server }}:{{ item.Port }}</span> -->
+                                <span class="custom-title">{{ item.host }}:{{ item.port }}</span>
                             </template>
                             <template #value>
                                 <van-space wrap>
                                     <van-button plain hairline type="default" size="small"
-                                        :loading="item.speedtestLoading" @click="clickSpeedtest(item, index)">{{
-                                            i18n.global.t('manage.speedtest') }}</van-button>
+                                        :loading="item.speedtestLoading" @click="clickSpeedtest(item, index)">{{ i18n.global.t('manage.speedtest') }}</van-button>
                                     <van-button plain hairline type="default" size="small" :loading="item.switchLoading"
-                                        @click="switchChecked(item)">{{
-                                            i18n.global.t('manage.switch') }}</van-button>
+                                        @click="switchChecked(item)">{{ item.selected? '\u0008\u0008✔\u0008\u0008':i18n.global.t('manage.switch') }}</van-button>
                                     <van-checkbox :name="index" shape="square" v-show="checkBoxShow"></van-checkbox>
                                 </van-space>
                             </template>
@@ -119,6 +113,7 @@ const getConfig = async () => {
     })
 }
 const switchChecked = (item) => {
+    item.switchLoading = true;
     //有BUG，如果在查找的情况下就会导致
     console.info('switchChecked')
     let idx = allNodeList.value.indexOf(item);
@@ -145,7 +140,8 @@ const switchChecked = (item) => {
         } else {
             showToast(i18n.global.t('dashboard.tool-switch-failed'))
         }
-        onRefresh();
+        item.switchLoading = false
+        onRefresh()
     })
 }
 const onLoad = () => {
@@ -393,7 +389,7 @@ const convertObject = (arr, custom) => {
         obj['custom'] = custom;
         obj['hashId'] = cyrb53(JSON.stringify(obj));
         // TODO 可能会出现多个相同节点？
-        obj['selected'] = lastSelected === obj.hashId;
+        obj['selected'] = lastSelected == obj.hashId;
         convertArr.push(obj);
     }
     return convertArr;
@@ -441,6 +437,7 @@ initStatus()
 .custom-title {
     margin-right: 4px;
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 .search-icon {

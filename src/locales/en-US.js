@@ -53,7 +53,7 @@ export const manage = {
     'placeholder-text': 'Please enter an Remarks.',
     'speedtest-fail': 'The speed measurement failed and an exception occurred.',
     'speedtest-reject': 'Wait patiently until the speed measurement of other nodes is completed before continuing.',
-    'speedtest-all-warn': 'All nodes will be speed tested soon to prevent the airport from being blocked! Use with caution (ps: not recommended. Too many nodes will freeze the page). Confirm to continue?',
+    'speedtest-all-warn': 'All nodes will be speed tested soon to prevent the airport from being blocked! Use with caution. Confirm to continue?',
 }
 export const setting = {
     'xrayhelper': 'Config - XrayHelper',

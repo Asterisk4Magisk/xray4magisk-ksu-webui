@@ -246,7 +246,7 @@
 import {ref} from 'vue'
 import i18n from "./locales/i18n.js"
 import YAML from "yaml"
-import {callApi, readFile,execCmdWithErrNo,execXrayHelperCmd, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
+import {callApi, readFile,execCmdWithExitCode,execXrayHelperCmd, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
 
 defineProps(["theme"])
 const loading = ref(false)
@@ -269,11 +269,10 @@ const changeCoreType = (core) => {
     saveConfig()
     showConfirmDialog({
         message: i18n.global.t('setting.switch-core')
-    })
-    .then(() => {
-        const basePath='/data/adb/xray'
-        const binPath=`${basePath}/bin/${core.value}`
-        config.value.xrayHelper.corePath=binPath
+    }).then(() => {
+        const basePath = '/data/adb/xray'
+        const binPath = `${basePath}/bin/${core.value}`
+        config.value.xrayHelper.corePath = binPath
         switch (core.value) {
             case 'v2ray':
                 config.value.xrayHelper.coreConfig = `${basePath}/v2rayconfs/config.json`
@@ -296,8 +295,7 @@ const changeCoreType = (core) => {
         }
         saveConfig()
         checkCoreBin(binPath)
-    })
-    .catch(() => {
+    }).catch(() => {
         () => resolve(true)
     });
 }
@@ -350,8 +348,8 @@ const socksPortEditor = ref(false)
 const tunDeviceEditor = ref(false)
 
 const checkCoreBin = (corePath) => {
-    execCmdWithErrNo(`ls ${corePath}`).then(errno => {
-        if(errno!=0){
+    execCmdWithExitCode(`ls ${corePath}`).then(errno => {
+        if(errno!==0){
             showConfirmDialog({
                 message: i18n.global.t('setting.core-not-found'),
             }).then(() => {
@@ -479,13 +477,14 @@ const saveConfig = () => {
     setTimeout(() => {
         callApi("get status").then(value => {
             if (value.pid.length > 0) {
-                execXrayHelperCmd("proxy refresh").then(value2 => {
+                execXrayHelperCmd("proxy refresh").then(() => {
                     showToast(i18n.global.t('setting.refresh-proxy'))
                 })
             }
         })
     }, 50)
 }
+
 const onRefresh = () => {
     setTimeout(() => {
         initConfig()
