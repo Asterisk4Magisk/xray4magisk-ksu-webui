@@ -1,7 +1,9 @@
 <template>
     <!-- clash显示外部连接，xray模仿v2rayNG做一个丐版 -->
-    <iframe v-if="iframeShow" :src="panelUrl" style="min-height: 85vh;min-width: 100vw;" frameborder="no" border="0"
-        marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+    <div v-if="iframeShow">
+        <iframe :src="panelUrl" style="min-height: 88vh;min-width: 100vw;" frameborder="no" border="0"
+                marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
+    </div>
     <div v-if="xrayUIShow">
         <van-nav-bar style="top: 46px;" fixed>
             <template #left>
@@ -104,7 +106,7 @@ const actions = [
     { text: i18n.global.t('manage.more-setting'), value: 'setting', disabled: true },
 ];
 
-const panelUrl = ref('https://clash.razord.top/#/proxies')
+const panelUrl = ref('http://127.0.0.1:65532/ui')
 
 const getConfig = async () => {
     return await readFile(XRAYHELPER_CONFIG).then(value => {
