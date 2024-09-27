@@ -40,11 +40,12 @@
                     <van-cell-group style="top: 46px;">
                         <van-cell v-for="(item, index) in showNodeList" :key="index" center>
                             <template #title>
-                                <span class="custom-title">{{ item.remarks }}</span><br/>
+                                <span class="custom-title">{{ item.remarks }}</span>
                             </template>
                             <template #label>
                                 <van-space fill>
                                     <van-tag type="primary">{{ item.type }}</van-tag>
+                                    <van-tag type="primary">{{ item.protocol }}</van-tag>
                                     <van-tag :color="item.color" v-show="item.show">{{ item.ping }}</van-tag>
                                 </van-space>
                                 <span class="custom-title">{{ item.host }}:{{ item.port }}</span>
@@ -261,7 +262,6 @@ function startSpeedtest() {
                 //后端真实ID：显示的ID
                 paramIds.push({ 'index': "" + sIndex, 'sIndex': index })
             }
-            let color = '#646566';
             if (nowTest.length === 0) {
                 allowSpeedtest = true;
                 return;
@@ -272,18 +272,20 @@ function startSpeedtest() {
                     return { ...result, ...value.result[obj] }
                 });
                 for (let result of mergedArr) {
-                    let ping = '-1';
+                    let ping = -1;
                     let item = showNodeList.value[result.sIndex];
                     item.speedtestLoading = false;
                     ping = result.realping;
-
-                    if (ping > -1 && ping < 500) {
+                    let color;
+                    if (ping === -1) {
+                        color = '#646566';
+                    } else if (ping < 500) {
                         color = '#07c160'
                     } else if (ping < 1000) {
                         color = '#d4b75c'
                     } else if (ping < 2000) {
                         color = '#e67f3c'
-                    } else if (ping > 3000) {
+                    } else {
                         color = '#ee0a24'
                     }
                     item.ping = `${ping} ms`;
