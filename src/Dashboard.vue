@@ -63,11 +63,6 @@
                         {{ $t('dashboard.tool-switch') }}
                     </van-button>
                 </van-col>
-                <van-col v-if="status.coreType!=='mihomo'" span="11">
-                    <van-button plain hairline type="default" block @click="switchCustomEditClicked">
-                        {{ $t('dashboard.tool-switch-custom-edit') }}
-                    </van-button>
-                </van-col>
             </van-row>
             <van-space/>
         </van-cell-group>
@@ -84,25 +79,9 @@
                 </van-cell-group>
             </van-radio-group>
         </van-popup>
-        <!-- switch custom editor -->
-        <van-popup v-model:show="switchCustomEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveSwitchCustom">
-            <van-cell :title="$t('dashboard.tool-switch-custom-edit')" title-style="max-width:100%;">
-                <template #right-icon>
-                    <van-icon size="1.2rem" name="plus" @click="addSwitchCustom"/>
-                </template>
-            </van-cell>
-            <van-list>
-                <van-field v-for="(item, idx) in switchCustomResult" :label="idx+':'" labelWidth="1.5em" :model-value="item"
-                           @update:model-value="v => editSwitchCustom(v, idx)">
-                    <template #right-icon>
-                        <van-icon size="1rem" name="cross" @click="deleteSwitchCustom(idx)"/>
-                    </template>
-                </van-field>
-            </van-list>
-        </van-popup>
         <!-- stdout receiver -->
         <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'35%',maxHeight:'85%'}" @closed="refresh">
-            <van-cell :title="$t('dashboard.stdout')" title-style="max-width:100%;" size="large"/>
+            <van-cell :title="$t('common.stdout')" title-style="max-width:100%;" size="large"/>
             <div class="stdout"><p>{{ stdout }}</p></div>
         </van-popup>
     </van-pull-refresh>
@@ -123,39 +102,11 @@ const switchCustom = ref(false)
 const switchChooser = ref(false)
 const switchChooserChecked = ref("")
 const switchResult = ref({result: []})
-const switchCustomResult = ref([])
 const stdout = ref(i18n.global.t('common.waiting-text'))
 const version = ref("")
-const status = ref({api: "", coreType: "mihomo", pid: "", method: "", dataDir: ""})
+const status = ref({api: "", coreType: "xray", pid: "", method: "", dataDir: ""})
 const coreStatus = ref(i18n.global.t('dashboard.status-core-status-stopped'))
 
-const switchCustomEditor = ref(false)
-const switchCustomEditClicked = () => {
-    readFile(`${status.value.dataDir}/custom.txt`).then(value => {
-        switchCustomResult.value = value.trim().split(/\s+/)
-        switchCustomEditor.value = true
-    }).catch(() => {
-        saveFile('', `${status.value.dataDir}/custom.txt`).then(() => {
-            switchCustomEditClicked()
-        })
-    })
-}
-const editSwitchCustom = (value, index) => {
-    switchCustomResult.value[index] = value
-}
-const deleteSwitchCustom = (index) => {
-    switchCustomResult.value.splice(index, 1)
-}
-const addSwitchCustom = () => {
-    switchCustomResult.value.push('')
-}
-const saveSwitchCustom = () => {
-    let content = ""
-    for (let v of switchCustomResult.value) {
-        content = content + v + '\n'
-    }
-    saveFile(content, `${status.value.dataDir}/custom.txt`)
-}
 const serviceCmd = [
     {text: 'start', value: 'start'},
     {text: 'stop', value: 'stop'},

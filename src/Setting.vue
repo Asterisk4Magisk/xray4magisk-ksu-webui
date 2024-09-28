@@ -43,7 +43,7 @@
                       clickable @click="clashDnsPortEditor = true"/>
             <van-cell :title="$t('setting.clash-template')" title-style="max-width:35%;" :value="config.clash.template"
                       clickable @click="clashTemplateEditor = true"/>
-            <van-cell :title="$t('setting.clash-api')" title-style="max-width:35%;" :value="config.clash.api"
+            <van-cell :title="$t('setting.panel-url')" title-style="max-width:35%;" :value="config.clash.panelUrl"
                       clickable @click="clashApiEditor = true"/>
         </van-cell-group>
         <!-- cell-group: adgHome options -->
@@ -154,7 +154,7 @@
         <van-field class="config" :label="$t('setting.clash-template')" v-model="config.clash.template"/>
     </van-popup>
     <van-popup v-model:show="clashApiEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.clash-api')" v-model="config.clash.api"/>
+        <van-field class="config" :label="$t('setting.panel-url')" v-model="config.clash.panelUrl"/>
     </van-popup>
     <!-- popup: adgHome editors -->
     <van-popup v-model:show="adgHomeAddressEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
@@ -237,7 +237,7 @@
         </van-list>
     </van-popup>
     <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'30%',maxHeight:'85%'}" >
-        <van-cell :title="$t('dashboard.stdout')" title-style="max-width:100%;" size="large"/>
+        <van-cell :title="$t('common.stdout')" title-style="max-width:100%;" size="large"/>
         <div class="stdout"><p>{{ stdout }}</p></div>
     </van-popup>
 </template>
@@ -440,7 +440,8 @@ function baseConfig() {
         },
         clash: {
             dnsPort: 0,
-            template: ''
+            template: '',
+            panelUrl: ''
         },
         adgHome: {
             enable: false,

@@ -11,7 +11,8 @@ export const common = {
     'ignore-text': 'Don\'t show again',
     'dashboard': "Dashboard",
     'manage': "Panel",
-    'setting': "Setting"
+    'setting': "Setting",
+    'stdout': 'Output',
 }
 export const dashboard = {
     'version': 'Version',
@@ -36,13 +37,11 @@ export const dashboard = {
     'tool-switch': 'Switch Clash Subscribe',
     'tool-switch-success': 'Switch success',
     'tool-switch-failed': 'Switch failed',
-    'tool-switch-custom-edit': 'Edit Custom Node',
-
-    'stdout': 'Output',
 }
 export const manage = {
     'not-support': 'Not supporting the current core type.',
     'no-more': 'No more.',
+    'edit-custom': 'Custom Node',
     'route-manage': 'Routing',
     'more-setting': 'Settings',
     'load-balancing': 'Balancer',
@@ -72,7 +71,7 @@ export const setting = {
     'clash': 'Config - Clash',
     'clash-dns-port': 'DNS Port',
     'clash-template': 'Template',
-    'clash-api': 'Panel URL',
+    'panel-url': 'Panel URL',
 
     'adghome': 'Config - AdGuardHome',
     'adghome-enable': 'Enable',
@@ -98,5 +97,4 @@ export const setting = {
     'switch-core': 'Detected core switching. Whether to synchronously switch to the default configuration?',
     'core-not-found':'Detected that the current core does not exist. Do you want to start downloading now?',
     'refresh-proxy':'The configuration file has been reloaded.'
-
 }

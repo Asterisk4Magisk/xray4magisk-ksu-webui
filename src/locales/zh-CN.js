@@ -11,7 +11,8 @@ export const common = {
     'ignore-text': '不再提醒',
     'dashboard': "仪表盘",
     'manage': "面板",
-    'setting': "设置"
+    'setting': "设置",
+    'stdout': '输出',
 }
 export const dashboard = {
     'version': '版本',
@@ -36,13 +37,11 @@ export const dashboard = {
     'tool-switch': '切换 Clash 订阅',
     'tool-switch-success': '切换成功',
     'tool-switch-failed': '切换失败',
-    'tool-switch-custom-edit': '编辑自定义节点',
-
-    'stdout': '输出',
 }
 export const manage = {
     'not-support': '暂不支持当前核心',
     'no-more': '没有更多了',
+    'edit-custom': '自定义节点',
     'route-manage': '路由规则',
     'more-setting': '更多设置',
     'load-balancing': '负载均衡',
@@ -72,7 +71,7 @@ export const setting = {
     'clash': '配置项 - Clash',
     'clash-dns-port': 'DNS 端口',
     'clash-template': '配置模板',
-    'clash-api': '面板地址',
+    'panel-url': '面板地址',
 
     'adghome': '配置项 - AdGuardHome',
     'adghome-enable': '启用',
