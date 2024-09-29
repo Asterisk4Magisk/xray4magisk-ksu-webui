@@ -47,8 +47,6 @@ export const manage = {
     'more-setting': '更多设置',
     'load-balancing': '负载均衡',
     'load-switch-data-failed': '加载节点信息失败，发生异常。',
-    'speedtest': '测试',
-    'switch': '切换',
     'remarks': '别名',
     'search': '查询中',
     'placeholder-text': '请输入别名',

@@ -47,8 +47,6 @@ export const manage = {
     'more-setting': 'Settings',
     'load-balancing': 'Balancer',
     'load-switch-data-failed': 'Load switch data failed, an exception occurred.',
-    'speedtest': 'Test',
-    'switch': 'Switch',
     'remarks': 'Remarks',
     'search': 'Querying',
     'placeholder-text': 'Please enter an Remarks.',

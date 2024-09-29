@@ -50,11 +50,11 @@
                         <span class="custom-title">{{ item.host }}:{{ item.port }}</span>
                     </template>
                     <template #value>
-                        <van-space wrap>
-                            <van-button plain hairline type="default" size="small"
-                                        :loading="item.speedtestLoading" @click="clickSpeedtest(item)">{{ i18n.global.t('manage.speedtest') }}</van-button>
-                            <van-button plain hairline type="default" size="small" :loading="item.switchLoading"
-                                        @click="switchChecked(item)">{{ item.selected? '\u0008\u0008✔\u0008\u0008':i18n.global.t('manage.switch') }}</van-button>
+                        <van-space>
+                            <van-button plain hairline type="default" size="small" icon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMxOTg5ZmEiIGQ9Ik0xMSA5LjQ3VjExaDMuNzZMMTMgMTQuNTNWMTNIOS4yNHpNMTMgMUw2IDE1aDV2OGw3LTE0aC01eiIvPjwvc3ZnPg=="
+                                        :loading="item.speedtestLoading" @click="clickSpeedtest(item)"/>
+                            <van-button plain hairline type="default" size="small" :icon="item.selected?'data:image/svg+xml;base64,PHN2ZyB0PSIxNzI3NjI2OTM1ODI3IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjE2NzIyIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTTgyOS40MTg2NjcgMjUzLjQxODY2N2E2NCA2NCAwIDAgMSA5My4zNzYgODcuNDI0bC0yLjg4IDMuMDcyLTQ2OS4zMzMzMzQgNDY5LjMzMzMzM2E2NCA2NCAwIDAgMS04Ny40MjQgMi44OGwtMy4wNzItMi44OC0yNTYtMjU2YTY0IDY0IDAgMCAxIDg3LjQyNC05My4zNzZsMy4wNzIgMi44OEw0MDUuMzMzMzMzIDY3Ny40ODI2NjdsNDI0LjA4NTMzNC00MjQuMDY0eiIgZmlsbD0iIzE5ODlmYSIgcC1pZD0iMTY3MjMiPjwvcGF0aD48L3N2Zz4=':'data:image/svg+xml;base64,PHN2ZyB0PSIxNzI3NjI3MDIwOTE2IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjE3NzkzIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTTk2MCA1MTJjMCA4Ny43ODY2NjctMjAuNTIyNjY3IDE2Ni44MjY2NjctNTcuNjIxMzMzIDIzMy4xOTQ2NjdhNDA1LjcxNzMzMyA0MDUuNzE3MzMzIDAgMCAxLTE1Ny4xODQgMTU3LjE4NEM2NzguODQ4IDkzOS40OTg2NjcgNTk5Ljc4NjY2NyA5NjAgNTEyIDk2MGMtODcuNzg2NjY3IDAtMTY2LjgyNjY2Ny0yMC41MjI2NjctMjMzLjE5NDY2Ny01Ny42MjEzMzNBNDA1LjcxNzMzMyA0MDUuNzE3MzMzIDAgMCAxIDEyMS42IDc0NS4xOTQ2NjdDODQuNTAxMzMzIDY3OC44NDggNjQgNTk5Ljc4NjY2NyA2NCA1MTJjMC04Ny43ODY2NjcgMjAuNTIyNjY3LTE2Ni44MjY2NjcgNTcuNjIxMzMzLTIzMy4xOTQ2NjdBNDA1LjcxNzMzMyA0MDUuNzE3MzMzIDAgMCAxIDI3OC44MDUzMzMgMTIxLjZDMzQ1LjE1MiA4NC41MDEzMzMgNDI0LjIxMzMzMyA2NCA1MTIgNjRjODcuNzg2NjY3IDAgMTY2LjgyNjY2NyAyMC41MjI2NjcgMjMzLjE5NDY2NyA1Ny42MjEzMzNhNDA1LjcxNzMzMyA0MDUuNzE3MzMzIDAgMCAxIDE1Ny4xODQgMTU3LjE4NEM5MzkuNDk4NjY3IDM0NS4xNTIgOTYwIDQyNC4yMTMzMzMgOTYwIDUxMnogbS04NS4zMzMzMzMgMGMwLTcyLjAyMTMzMy0xNi4yNTYtMTM2Ljk4MTMzMy00Ni43NjI2NjctMTkxLjU3MzMzM2EzMjAuMzg0IDMyMC4zODQgMCAwIDAtMTI0LjM1Mi0xMjQuMzMwNjY3QzY0OC45ODEzMzMgMTY1LjU4OTMzMyA1ODQuMDIxMzMzIDE0OS4zMzMzMzMgNTEyIDE0OS4zMzMzMzNjLTcyLjAyMTMzMyAwLTEzNi45ODEzMzMgMTYuMjU2LTE5MS41NzMzMzMgNDYuNzYyNjY3YTMyMC4zODQgMzIwLjM4NCAwIDAgMC0xMjQuMzMwNjY3IDEyNC4zNTJDMTY1LjU4OTMzMyAzNzUuMDE4NjY3IDE0OS4zMzMzMzMgNDM5Ljk3ODY2NyAxNDkuMzMzMzMzIDUxMmMwIDcyLjAyMTMzMyAxNi4yNTYgMTM2Ljk4MTMzMyA0Ni43NjI2NjcgMTkxLjU3MzMzM2EzMjAuMzg0IDMyMC4zODQgMCAwIDAgMTI0LjM1MiAxMjQuMzMwNjY3QzM3NS4wMTg2NjcgODU4LjQxMDY2NyA0MzkuOTc4NjY3IDg3NC42NjY2NjcgNTEyIDg3NC42NjY2NjdjNzIuMDIxMzMzIDAgMTM2Ljk4MTMzMy0xNi4yNTYgMTkxLjU3MzMzMy00Ni43NjI2NjdhMzIwLjM4NCAzMjAuMzg0IDAgMCAwIDEyNC4zMzA2NjctMTI0LjM1MkM4NTguNDEwNjY3IDY0OC45ODEzMzMgODc0LjY2NjY2NyA1ODQuMDIxMzMzIDg3NC42NjY2NjcgNTEyeiIgZmlsbD0iIzE5ODlmYSIgcC1pZD0iMTc3OTQiPjwvcGF0aD48L3N2Zz4='"
+                                        :loading="item.switchLoading" @click="switchChecked(item)"/>
                         </van-space>
                     </template>
                 </van-cell>
@@ -393,9 +393,13 @@ initStatus()
 
 <style>
 .custom-title {
+    display: inline-block;
     margin-right: 4px;
     vertical-align: middle;
     white-space: nowrap;
+    max-width: 70vw;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .search-icon {
