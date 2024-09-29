@@ -34,7 +34,7 @@
                 </van-space>
             </template>
         </van-nav-bar>
-        <van-list v-model:loading="loading" :finished="finished" :finished-text="i18n.global.t('manage.no-more')" @load="onLoad">
+        <van-list v-model:loading="loading" :finished="finished" :finished-text="i18n.global.t('manage.no-more')">
             <van-cell-group style="top: 46px;">
                 <van-cell v-for="(item, index) in showNodeList" :key="index" center>
                     <template #title>
@@ -279,7 +279,7 @@ const startSpeedtest = async (custom) => {
                 node.show = true;
             }
         }).catch(ex => {
-            showToast(i18n.global.t('manage.speedtest-fail') + ex)
+            showToast(i18n.global.t('manage.speedtest-failed') + ex)
         }).finally(() => {
             for (const node of nowTest) {
                 node.speedtestLoading = false;
@@ -334,23 +334,27 @@ const convertObject = (arr, custom) => {
     return convertArr;
 }
 const initXrayData = async () => {
-    let nodeList = await callApi(`get switch all`);
-    if (nodeList.custom.length > 0) {
-        const customData = convertObject(nodeList.custom, true);
-        allNodeList.value.push(...customData);
-        showNodeList.value.push(...customData)
-    }
-    const nodeData = convertObject(nodeList.result, false);
-    allNodeList.value.push(...nodeData);
-    showNodeList.value.push(...nodeData);
-
-    console.info('initXrayData complete')
+    await callApi(`get switch all`).then(value => {
+        if (value.custom.length > 0) {
+            const customData = convertObject(value.custom, true);
+            allNodeList.value.push(...customData);
+            showNodeList.value.push(...customData)
+        }
+        const nodeData = convertObject(value.result, false);
+        allNodeList.value.push(...nodeData);
+        showNodeList.value.push(...nodeData);
+        console.info('initXrayData complete')
+    }).catch(ex => {
+        showToast(i18n.global.t('manage.load-switch-data-failed') + ex)
+    })
 }
-const onLoad = () => {
-    console.info('onLoad')
+const onLoad = async () => {
+    console.info('onLoad');
+    loading.value = true;
+    finished.value = false;
     showNodeList.value = [];
     allNodeList.value = [];
-    initXrayData();
+    await initXrayData();
     loading.value = false;
     finished.value = true;
 }

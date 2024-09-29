@@ -186,7 +186,7 @@ const switchChecked = (custom, idx) => {
 }
 const refresh = () => {
     version.value = ""
-    status.value = {api: "", coreType: "mihomo", pid: "", method: "", dataDir: ""}
+    status.value = {api: "", coreType: "xray", pid: "", method: "", dataDir: ""}
     running.value = false
     coreStatus.value = i18n.global.t('dashboard.status-core-status-stopped')
     stdout.value = i18n.global.t('common.waiting-text')
@@ -212,6 +212,8 @@ const initStatus = () => {
             running.value = true
             coreStatus.value = i18n.global.t('dashboard.status-core-status-running')
         }
+    }).catch(ex => {
+        showToast(i18n.global.t('dashboard.status-get-failed') + ex)
     })
 }
 initVersion()

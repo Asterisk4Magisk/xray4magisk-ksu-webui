@@ -20,6 +20,7 @@ export const dashboard = {
     'version-dashboard': '仪表盘',
 
     'status': '状态',
+    'status-get-failed': '获取状态信息失败，发生异常。',
     'status-core-pid': "进程 ID",
     'status-core-status': "核心状态",
     'status-core-status-stopped': "停止",
@@ -45,12 +46,13 @@ export const manage = {
     'route-manage': '路由规则',
     'more-setting': '更多设置',
     'load-balancing': '负载均衡',
+    'load-switch-data-failed': '加载节点信息失败，发生异常。',
     'speedtest': '测试',
     'switch': '切换',
     'remarks': '别名',
     'search': '查询中',
     'placeholder-text': '请输入别名',
-    'speedtest-fail': '测试失败，发生异常。',
+    'speedtest-failed': '测试失败，发生异常。',
     'speedtest-reject': '耐心等待其他节点测试结束后再继续。',
     'speedtest-all-warn': '即将测试所有节点，以防机场封号！谨慎使用，确认继续?',
 }

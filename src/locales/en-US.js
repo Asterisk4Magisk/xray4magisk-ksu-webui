@@ -20,6 +20,7 @@ export const dashboard = {
     'version-dashboard': 'Dashboard',
 
     'status': 'Status',
+    'status-get-failed': 'Get status failed, an exception occurred.',
     'status-core-pid': "Core Pid",
     'status-core-status': "Core Status",
     'status-core-status-stopped': "stopped",
@@ -45,12 +46,13 @@ export const manage = {
     'route-manage': 'Routing',
     'more-setting': 'Settings',
     'load-balancing': 'Balancer',
+    'load-switch-data-failed': 'Load switch data failed, an exception occurred.',
     'speedtest': 'Test',
     'switch': 'Switch',
     'remarks': 'Remarks',
     'search': 'Querying',
     'placeholder-text': 'Please enter an Remarks.',
-    'speedtest-fail': 'The test failed and an exception occurred.',
+    'speedtest-failed': 'The test failed and an exception occurred.',
     'speedtest-reject': 'Wait patiently until the test of other nodes is completed before continuing.',
     'speedtest-all-warn': 'All nodes will be tested soon to prevent the airport from being blocked! Use with caution. Confirm to continue?',
 }
