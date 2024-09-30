@@ -23,9 +23,9 @@
                       clickable @click="cpuLimitEditor = true"/>
             <van-cell :title="$t('setting.xrayhelper-mem-limit')" title-style="max-width:35%;" :value="config.xrayHelper.memLimit.toString()"
                       clickable @click="memLimitEditor = true"/>
-            <van-cell :title="$t('setting.xrayhelper-proxy-tag')" title-style="max-width:35%;" :value="config.xrayHelper.proxyTag"
+            <van-cell v-if="config.xrayHelper.coreType !== 'mihomo'" :title="$t('setting.xrayhelper-proxy-tag')" title-style="max-width:35%;" :value="config.xrayHelper.proxyTag"
                       clickable @click="proxyTagEditor = true"/>
-            <van-popover :actions="boolc" @select="changeAllowInsecure" placement="bottom-end">
+            <van-popover v-if="config.xrayHelper.coreType !== 'mihomo'" :actions="boolc" @select="changeAllowInsecure" placement="bottom-end">
                 <template #reference>
                     <van-cell :title="$t('setting.xrayhelper-allow-insecure')" title-style="max-width:35%;"
                               :value="config.xrayHelper.allowInsecure.toString()" clickable/>
@@ -38,7 +38,7 @@
                       clickable @click="userAgentEditor = true"/>
         </van-cell-group>
         <!-- cell-group: clash options -->
-        <van-cell-group :title="$t('setting.clash')" inset>
+        <van-cell-group v-if="config.xrayHelper.coreType === 'mihomo'" :title="$t('setting.clash')" inset>
             <van-cell :title="$t('setting.clash-dns-port')" title-style="max-width:35%;" :value="config.clash.dnsPort.toString()"
                       clickable @click="clashDnsPortEditor = true"/>
             <van-cell :title="$t('setting.clash-template')" title-style="max-width:35%;" :value="config.clash.template"
@@ -55,11 +55,11 @@
                     <div/>
                 </template>
             </van-popover>
-            <van-cell :title="$t('setting.adghome-address')" title-style="max-width:35%;" :value="config.adgHome.address"
+            <van-cell v-if="config.adgHome.enable" :title="$t('setting.adghome-address')" title-style="max-width:35%;" :value="config.adgHome.address"
                       clickable @click="adgHomeAddressEditor = true"/>
-            <van-cell :title="$t('setting.adghome-work-dir')" title-style="max-width:35%;" :value="config.adgHome.workDir"
+            <van-cell v-if="config.adgHome.enable" :title="$t('setting.adghome-work-dir')" title-style="max-width:35%;" :value="config.adgHome.workDir"
                       clickable @click="adgHomeWorkDirEditor = true"/>
-            <van-cell :title="$t('setting.adghome-dns-port')" title-style="max-width:35%;" :value="config.adgHome.dnsPort.toString()"
+            <van-cell v-if="config.adgHome.enable" :title="$t('setting.adghome-dns-port')" title-style="max-width:35%;" :value="config.adgHome.dnsPort.toString()"
                       clickable @click="adgHomeDnsPortEditor = true"/>
         </van-cell-group>
         <!-- cell-group: proxy options -->
@@ -70,11 +70,11 @@
                     <div/>
                 </template>
             </van-popover>
-            <van-cell :title="$t('setting.proxy-tproxy-port')" title-style="max-width:35%;" :value="config.proxy.tproxyPort.toString()"
+            <van-cell v-if="config.proxy.method === 'tproxy'" :title="$t('setting.proxy-tproxy-port')" title-style="max-width:35%;" :value="config.proxy.tproxyPort.toString()"
                       clickable @click="tproxyPortEditor = true"/>
-            <van-cell :title="$t('setting.proxy-socks-port')" title-style="max-width:35%;" :value="config.proxy.socksPort.toString()"
+            <van-cell v-if="config.proxy.method === 'tun2socks'" :title="$t('setting.proxy-socks-port')" title-style="max-width:35%;" :value="config.proxy.socksPort.toString()"
                       clickable @click="socksPortEditor = true"/>
-            <van-cell :title="$t('setting.proxy-tun-device')" title-style="max-width:35%;" :value="config.proxy.tunDevice" clickable
+            <van-cell v-if="config.proxy.method === 'tun2socks' || config.proxy.method === 'tun'" :title="$t('setting.proxy-tun-device')" title-style="max-width:35%;" :value="config.proxy.tunDevice" clickable
                       @click="tunDeviceEditor = true"/>
             <van-popover :actions="boolc" @select="changeEnableIPv6" placement="bottom-end">
                 <template #reference>
@@ -90,19 +90,19 @@
                     <div/>
                 </template>
             </van-popover>
-            <van-popover :actions="mode" @select="changeMode" placement="bottom-end">
+            <van-popover v-if="config.proxy.method !== 'tun'" :actions="mode" @select="changeMode" placement="bottom-end">
                 <template #reference>
                     <van-cell :title="$t('setting.proxy-mode')" title-style="max-width:35%;" :value="config.proxy.mode" clickable/>
                     <div/>
                 </template>
             </van-popover>
-            <van-cell :title="$t('setting.proxy-pkg-list')" title-style="max-width:35%;" :value="config.proxy.pkgList.toString()"
+            <van-cell v-if="config.proxy.method !== 'tun'" :title="$t('setting.proxy-pkg-list')" title-style="max-width:35%;" :value="config.proxy.pkgList.toString()"
                       clickable @click="pkgListEditor = true"/>
             <van-cell :title="$t('setting.proxy-ap-list')" title-style="max-width:35%;" :value="config.proxy.apList.toString()"
                       clickable @click="apListEditor = true"/>
-            <van-cell :title="$t('setting.proxy-ignore-list')" title-style="max-width:35%;" :value="config.proxy.ignoreList.toString()"
+            <van-cell v-if="config.proxy.method !== 'tun'" :title="$t('setting.proxy-ignore-list')" title-style="max-width:35%;" :value="config.proxy.ignoreList.toString()"
                       clickable @click="ignoreListEditor = true"/>
-            <van-cell :title="$t('setting.proxy-intra-list')" title-style="max-width:35%;" :value="config.proxy.intraList.toString()"
+            <van-cell v-if="config.proxy.method !== 'tun'" :title="$t('setting.proxy-intra-list')" title-style="max-width:35%;" :value="config.proxy.intraList.toString()"
                       clickable @click="intraListEditor = true"/>
         </van-cell-group>
     </van-pull-refresh>
