@@ -44,6 +44,7 @@ export const manage = {
     'no-more': '没有更多了',
     'edit-custom': '自定义节点',
     'rule-manage': '路由规则',
+    'ruleset-manage': '规则集',
     'more-setting': '更多设置',
     'load-balancing': '负载均衡',
     'load-switch-data-failed': '加载节点信息失败，发生异常。',

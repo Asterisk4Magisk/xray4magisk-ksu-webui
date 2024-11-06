@@ -93,7 +93,7 @@
                         <van-space>
                             <van-button plain hairline type="default" size="small" icon="arrow-up" @click="exchangeRule(index,index-1)"/>
                             <van-button plain hairline type="default" size="small" icon="arrow-down" @click="exchangeRule(index,index+1)"/>
-                            <van-button plain hairline type="default" size="small" icon="edit" @click="editRule(item.index)"/>
+                            <van-button plain hairline type="default" size="small" icon="edit" @click="editRule(index)"/>
                             <van-button plain hairline type="default" size="small" icon="cross" @click="deleteRule(index)"/>
                         </van-space>
                     </template>
@@ -117,6 +117,35 @@
                           @click="ruleOutboundSelected(item)"/>
             </van-cell-group>
         </van-popup>
+        <!-- ruleset manage -->
+        <van-popup v-model:show="rulesetManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
+            <van-cell :title="$t('manage.ruleset-manage')" title-style="max-width:100%;">
+                <template #right-icon>
+                    <van-icon size="1.2rem" name="plus" @click="addRuleset"/>
+                </template>
+            </van-cell>
+            <van-cell-group>
+                <van-cell v-for="(item, index) in rulesetResult" :key="index" center>
+                    <template #title>
+                        <span class="custom-title">{{ item.tag }}</span>
+                    </template>
+                    <template #value>
+                        <van-space>
+                            <van-button plain hairline type="default" size="small" icon="edit" @click="editRuleset(index)"/>
+                            <van-button plain hairline type="default" size="small" icon="cross" @click="deleteRuleset(index)"/>
+                        </van-space>
+                    </template>
+                </van-cell>
+            </van-cell-group>
+        </van-popup>
+        <!-- ruleset editor -->
+        <van-popup v-model:show="rulesetEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveRuleset">
+            <van-list>
+                <van-field v-for="(value, key) in rulesetField"
+                           type="textarea" autosize :label="key + ':'" labelWidth="7em"
+                           :model-value="value" @update:model-value="v => rulesetResult[currentRulesetResult][key] = v"/>
+            </van-list>
+        </van-popup>
         <!-- 负载均衡的时候出现 -->
         <!-- <van-floating-bubble icon="checked" @click="onClick" /> -->
     </div>
@@ -127,8 +156,19 @@ import {ref, computed} from 'vue'
 import i18n from "./locales/i18n.js"
 import YAML from "yaml"
 import {callApi, readFile, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
-import {newRuleObject as newRuleObjectXray, parseRuleObject as parseRuleObjectXray, standardizeRuleObject as standardizeRuleObjectXray} from "./xray.js";
-import {newRuleObject as newRuleObjectSingbox, parseRuleObject as parseRuleObjectSingbox, standardizeRuleObject as standardizeRuleObjectSingbox} from "./sing-box.js";
+import {
+    newRuleObject as newRuleObjectXray,
+    parseRuleObject as parseRuleObjectXray,
+    standardizeRuleObject as standardizeRuleObjectXray
+} from "./xray.js";
+import {
+    newRuleObject as newRuleObjectSingbox,
+    parseRuleObject as parseRuleObjectSingbox,
+    standardizeRuleObject as standardizeRuleObjectSingbox,
+    newRulesetObject as newRulesetObjectSingbox,
+    parseRulesetObject as parseRulesetObjectSingbox,
+    standardizeRulesetObject as standardizeRulesetObjectSingbox
+} from "./sing-box.js";
 import {Buffer} from "buffer";
 
 defineProps(["theme"])
@@ -139,19 +179,17 @@ const showMenu = ref(false);
 const actions = [
     {text: i18n.global.t('manage.edit-custom'), value: 'edit-custom', disabled: false},
     {text: i18n.global.t('manage.rule-manage'), value: 'rule', disabled: false},
-    {text: i18n.global.t('manage.load-balancing'), value: 'balancing', disabled: true},
-    {text: i18n.global.t('manage.more-setting'), value: 'setting', disabled: true},
+    //{text: i18n.global.t('manage.load-balancing'), value: 'balancing', disabled: true},
+    //{text: i18n.global.t('manage.more-setting'), value: 'setting', disabled: true},
 ];
 const onSelect = (action) => {
-    //TODO 左上角菜单
+    // 左上角菜单
     if (action.value === 'edit-custom') {
         showSwitchCustomEditor()
     } else if (action.value === 'rule') {
         showRuleManage()
-    } else if (action.value === 'setting') {
-
-    } else {
-
+    } else if (action.value === 'ruleset') {
+        showRulesetManage()
     }
 }
 const loading = ref(false);
@@ -304,7 +342,6 @@ const saveRule = async () => {
     if (ruleResult.value[currentRuleResult.value].newRule) {
         params.push("add")
         params.push("rule")
-        params.push(`${ruleResult.value[currentRuleResult.value].index}`)
     } else {
         params.push("set")
         params.push("rule")
@@ -318,9 +355,65 @@ const saveRule = async () => {
     }
     params.push(`${Buffer.from(JSON.stringify(ruleResult.value[currentRuleResult.value])).toString("base64")}`)
     await callApi(params)
+    currentRuleResult.value = 0
     showRuleManage()
 }
-
+// ruleset
+const rulesetResult = ref([])
+const currentRulesetResult = ref(0)
+const rulesetField = computed(() => {
+    let result = {}
+    Object.assign(result, rulesetResult.value[currentRulesetResult.value])
+    delete result["index"]
+    delete result["newRuleset"]
+    return result
+})
+const rulesetManage = ref(false)
+const rulesetEditor = ref(false)
+const showRulesetManage = () => {
+    rulesetManage.value = true
+    callApi(`get ruleset`).then(value => {
+        rulesetResult.value = value.result
+        for (let i = 0; i < rulesetResult.value.length; i++) {
+            rulesetResult.value[i].index = i
+            rulesetResult.value[i].newRuleset = false
+            rulesetResult.value[i] = parseRulesetObjectSingbox(rulesetResult.value[i])
+        }
+    })
+}
+const addRuleset = () => {
+    let ruleset = newRulesetObjectSingbox()
+    ruleset.index = rulesetResult.value.length
+    ruleset.newRuleset = true
+    rulesetResult.value.push(ruleset)
+    editRuleset(rulesetResult.value.length - 1)
+}
+const editRuleset = (index) => {
+    currentRulesetResult.value = index
+    rulesetEditor.value = true
+}
+const deleteRuleset = async (index) => {
+    await callApi(`delete ruleset ${index}`)
+    showRulesetManage()
+}
+const saveRuleset = async () => {
+    let params = []
+    if (rulesetResult.value[currentRulesetResult.value].newRuleset) {
+        params.push("add")
+        params.push("ruleset")
+    } else {
+        params.push("set")
+        params.push("ruleset")
+        params.push(`${rulesetResult.value[currentRulesetResult.value].index}`)
+    }
+    // standardize
+    standardizeRulesetObjectSingbox(rulesetResult.value[currentRulesetResult.value])
+    params.push(`${Buffer.from(JSON.stringify(rulesetResult.value[currentRulesetResult.value])).toString("base64")}`)
+    await callApi(params)
+    currentRulesetResult.value = 0
+    showRulesetManage()
+}
+// 点击切换节点按钮
 const switchChecked = (item) => {
     item.switchLoading = true;
     //设置唯一ID，用于回显选中节点
@@ -553,6 +646,9 @@ const initStatus = () => {
             showToast(i18n.global.t('manage.not-support'))
         } else if (core_type) {
             coreType.value = core_type
+            if (core_type === 'sing-box') {
+                actions.push({text: i18n.global.t('manage.ruleset-manage'), value: 'ruleset', disabled: false})
+            }
             if (core_type === 'xray' || core_type === 'sing-box') {
                 onLoad()
             }

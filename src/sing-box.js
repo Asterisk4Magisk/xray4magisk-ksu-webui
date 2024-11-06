@@ -32,6 +32,17 @@ export const newRuleObject = () => {
         outbound: ""
     }
 }
+export const newRulesetObject = () => {
+    return {
+        type: "",
+        tag: "",
+        format: "",
+        path: "",
+        url: "",
+        download_detour: "",
+        update_interval: "",
+    }
+}
 export const parseRuleObject = (rule) => {
     let result = newRuleObject()
     Object.keys(rule).forEach(key => {
@@ -39,6 +50,17 @@ export const parseRuleObject = (rule) => {
             result[key] = rule[key]
         } else {
             result[key] = rule[key].toString()
+        }
+    })
+    return result
+}
+export const parseRulesetObject = (ruleset) => {
+    let result = newRulesetObject()
+    Object.keys(ruleset).forEach(key => {
+        if (key === "index" || key === "newRuleset" || ruleset[key].length === 0) {
+            result[key] = ruleset[key]
+        } else {
+            result[key] = ruleset[key].toString()
         }
     })
     return result
@@ -260,6 +282,13 @@ export const standardizeRuleObject = (rule) => {
         if (key === "invert") {
             rule[key] = JSON.parse(rule[key])
             return
+        }
+    })
+}
+export const standardizeRulesetObject = (ruleset) => {
+    Object.keys(ruleset).forEach(key => {
+        if (key === "index" || key === "newRuleset" || ruleset[key].length === 0) {
+            delete ruleset[key]
         }
     })
 }
