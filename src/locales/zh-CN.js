@@ -43,7 +43,7 @@ export const manage = {
     'not-support': '暂不支持当前核心',
     'no-more': '没有更多了',
     'edit-custom': '自定义节点',
-    'route-manage': '路由规则',
+    'rule-manage': '路由规则',
     'more-setting': '更多设置',
     'load-balancing': '负载均衡',
     'load-switch-data-failed': '加载节点信息失败，发生异常。',

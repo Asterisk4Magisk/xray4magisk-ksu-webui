@@ -1,10 +1,10 @@
 <template>
     <!-- clash显示外部连接，xray模仿v2rayNG做一个丐版 -->
-    <div v-if="iframeShow">
+    <div v-if="coreType==='mihomo'">
         <iframe :src="panelUrl" style="min-height: 88vh;min-width: 100vw;" frameborder="no" border="0"
                 marginwidth="0" marginheight="0" scrolling="no" allowtransparency="yes"></iframe>
     </div>
-    <div v-if="xrayUIShow">
+    <div v-if="coreType==='xray'||coreType==='sing-box'">
         <van-nav-bar style="top: 46px;" fixed>
             <template #left>
                 <van-popover v-model:show="showMenu" :actions="actions" @select="onSelect" placement="bottom-start">
@@ -77,26 +77,68 @@
                 </van-field>
             </van-list>
         </van-popup>
+        <!-- rule manage -->
+        <van-popup v-model:show="ruleManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
+            <van-cell :title="$t('manage.rule-manage')" title-style="max-width:100%;">
+                <template #right-icon>
+                    <van-icon size="1.2rem" name="plus" @click="addRule"/>
+                </template>
+            </van-cell>
+            <van-cell-group>
+                <van-cell v-for="(item, index) in ruleResult" :key="index" center>
+                    <template #title>
+                        <span class="custom-title">{{ item.remarks }}</span>
+                    </template>
+                    <template #value>
+                        <van-space>
+                            <van-button plain hairline type="default" size="small" icon="arrow-up" @click="exchangeRule(index,index-1)"/>
+                            <van-button plain hairline type="default" size="small" icon="arrow-down" @click="exchangeRule(index,index+1)"/>
+                            <van-button plain hairline type="default" size="small" icon="edit" @click="editRule(item.index)"/>
+                            <van-button plain hairline type="default" size="small" icon="cross" @click="deleteRule(index)"/>
+                        </van-space>
+                    </template>
+                </van-cell>
+            </van-cell-group>
+        </van-popup>
+        <!-- rule editor -->
+        <van-popup v-model:show="ruleEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveRule">
+            <van-list>
+                <van-cell :title="(coreType==='xray'?'outboundTag: ':'outbound: ') + ruleResult[currentRuleResult]['remarks']"
+                          title-style="max-width:100%;height:2rem;font-size:1.2rem" @click="outboundSelector = true"/>
+                <van-field v-for="(value, key) in ruleField"
+                           type="textarea" autosize :label="key + ':'" labelWidth="7em"
+                           :model-value="value" @update:model-value="v => ruleResult[currentRuleResult][key] = v"/>
+            </van-list>
+        </van-popup>
+        <!-- outbound selector -->
+        <van-popup v-model:show="outboundSelector" round :style="{ width: '90%' ,maxHeight:'85%'}">
+            <van-cell-group>
+                <van-cell v-for="(item) in ruleOutbound" :title="item.remarks" clickable
+                          @click="ruleOutboundSelected(item)"/>
+            </van-cell-group>
+        </van-popup>
         <!-- 负载均衡的时候出现 -->
         <!-- <van-floating-bubble icon="checked" @click="onClick" /> -->
     </div>
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
 import i18n from "./locales/i18n.js"
 import YAML from "yaml"
 import {callApi, readFile, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
+import {newRuleObject as newRuleObjectXray, parseRuleObject as parseRuleObjectXray, standardizeRuleObject as standardizeRuleObjectXray} from "./xray.js";
+import {newRuleObject as newRuleObjectSingbox, parseRuleObject as parseRuleObjectSingbox, standardizeRuleObject as standardizeRuleObjectSingbox} from "./sing-box.js";
+import {Buffer} from "buffer";
 
 defineProps(["theme"])
 const panelUrl = ref('http://127.0.0.1:65532/ui');
 const dataDir = ref('/data/adb/xray/data');
-const iframeShow = ref(false);
-const xrayUIShow = ref(false);
+const coreType = ref("")
 const showMenu = ref(false);
 const actions = [
     {text: i18n.global.t('manage.edit-custom'), value: 'edit-custom', disabled: false},
-    {text: i18n.global.t('manage.route-manage'), value: 'routing', disabled: true},
+    {text: i18n.global.t('manage.rule-manage'), value: 'rule', disabled: false},
     {text: i18n.global.t('manage.load-balancing'), value: 'balancing', disabled: true},
     {text: i18n.global.t('manage.more-setting'), value: 'setting', disabled: true},
 ];
@@ -104,8 +146,8 @@ const onSelect = (action) => {
     //TODO 左上角菜单
     if (action.value === 'edit-custom') {
         showSwitchCustomEditor()
-    } else if (action.value === 'routing') {
-
+    } else if (action.value === 'rule') {
+        showRuleManage()
     } else if (action.value === 'setting') {
 
     } else {
@@ -121,7 +163,7 @@ const allNodeList = ref([]);
 const showNodeList = ref([]);
 let allowSpeedtest = true;
 const speedTestList = ref([]);
-
+// switch custom
 const switchCustomResult = ref([]);
 const switchCustomEditor = ref(false);
 const showSwitchCustomEditor = () => {
@@ -150,6 +192,133 @@ const saveSwitchCustom = () => {
     }
     saveFile(content, `${dataDir.value}/custom.txt`)
     onLoad()
+}
+// rule
+const ruleResult = ref([])
+const currentRuleResult = ref(0)
+const ruleField = computed(() => {
+    let result = {}
+    Object.assign(result, ruleResult.value[currentRuleResult.value])
+    delete result["remarks"]
+    delete result["index"]
+    delete result["newRule"]
+    delete result["outbound"]
+    delete result["outboundTag"]
+    return result
+})
+const ruleOutbound = computed(() => {
+    let result = []
+    result.push({remarks: "direct(builtin)", index: "direct", virtual: true})
+    result.push({remarks: "block(builtin)", index: "block", virtual: true})
+    result.push({remarks: "proxy(builtin)", index: "proxy", virtual: true})
+    result.push(...allNodeList.value)
+    return result
+})
+const ruleManage = ref(false)
+const ruleEditor = ref(false)
+const outboundSelector = ref(false)
+const showRuleManage = () => {
+    ruleManage.value = true
+    callApi(`get rule`).then(value => {
+        ruleResult.value = value.result
+        for (let i = 0; i < ruleResult.value.length; i++) {
+            ruleResult.value[i].index = i
+            ruleResult.value[i].newRule = false
+            if (coreType.value === 'xray') {
+                ruleResult.value[i] = parseRuleObjectXray(ruleResult.value[i])
+                ruleResult.value[i].remarks = ruleResult.value[i].outboundTag
+                if (ruleResult.value[i].outboundTag.startsWith('xrayhelper-')) {
+                    let node = chooseNode(parseInt(ruleResult.value[i].outboundTag.replace('xrayhelper-', '')), false)
+                    if (node) {
+                        ruleResult.value[i].remarks = node.remarks
+                    }
+                } else if (ruleResult.value[i].outboundTag.startsWith('xrayhelpercustom-')) {
+                    let node = chooseNode(parseInt(ruleResult.value[i].outboundTag.replace('xrayhelpercustom-', '')), true)
+                    if (node) {
+                        ruleResult.value[i].remarks = node.remarks
+                    }
+                }
+            } else if (coreType.value === 'sing-box') {
+                ruleResult.value[i] = parseRuleObjectSingbox(ruleResult.value[i])
+                ruleResult.value[i].remarks = ruleResult.value[i].outbound
+                if (ruleResult.value[i].outbound.startsWith('xrayhelper-')) {
+                    let node = chooseNode(parseInt(ruleResult.value[i].outbound.replace('xrayhelper-', '')), false)
+                    if (node) {
+                        ruleResult.value[i].remarks = node.remarks
+                    }
+                } else if (ruleResult.value[i].outbound.startsWith('xrayhelpercustom-')) {
+                    let node = chooseNode(parseInt(ruleResult.value[i].outbound.replace('xrayhelpercustom-', '')), true)
+                    if (node) {
+                        ruleResult.value[i].remarks = node.remarks
+                    }
+                }
+            }
+        }
+    })
+}
+const addRule = () => {
+    let rule
+    if (coreType.value === 'xray') {
+        rule = newRuleObjectXray()
+    } else if (coreType.value === 'sing-box') {
+        rule = newRuleObjectSingbox()
+    }
+    rule.index = ruleResult.value.length
+    rule.newRule = true
+    ruleResult.value.push(rule)
+    editRule(ruleResult.value.length - 1)
+}
+const editRule = (index) => {
+    currentRuleResult.value = index
+    ruleEditor.value = true
+}
+const ruleOutboundSelected = (item) => {
+    let outbound
+    if (item.virtual) {
+        outbound = item.index
+        ruleResult.value[currentRuleResult.value].remarks = item.remarks
+    } else if (item.custom) {
+        outbound = "xrayhelpercustom-" + item.index
+        ruleResult.value[currentRuleResult.value].remarks = chooseNode(item.index, true).remarks
+    } else {
+        outbound = "xrayhelper-" + item.index
+        ruleResult.value[currentRuleResult.value].remarks = chooseNode(item.index, false).remarks
+    }
+    if (coreType.value === 'xray') {
+        ruleResult.value[currentRuleResult.value].outboundTag = outbound
+    } else if (coreType.value === 'sing-box') {
+        ruleResult.value[currentRuleResult.value].outbound = outbound
+    }
+    outboundSelector.value = false
+}
+const exchangeRule = async (a, b) => {
+    await callApi(`exchange rule ${a} ${b}`)
+    showRuleManage()
+}
+const deleteRule = async (index) => {
+    await callApi(`delete rule ${index}`)
+    showRuleManage()
+}
+const saveRule = async () => {
+    let params = []
+    if (ruleResult.value[currentRuleResult.value].newRule) {
+        params.push("add")
+        params.push("rule")
+        params.push(`${ruleResult.value[currentRuleResult.value].index}`)
+    } else {
+        params.push("set")
+        params.push("rule")
+        params.push(`${ruleResult.value[currentRuleResult.value].index}`)
+    }
+    // standardize
+    if (coreType.value === 'xray') {
+        standardizeRuleObjectXray(ruleResult.value[currentRuleResult.value])
+    } else if (coreType.value === 'sing-box') {
+        standardizeRuleObjectSingbox(ruleResult.value[currentRuleResult.value])
+    }
+    params.push(`${Buffer.from(JSON.stringify(ruleResult.value[currentRuleResult.value])).toString("base64")}`)
+    await callApi(params)
+    showRuleManage()
 }
 
 const switchChecked = (item) => {
@@ -198,6 +367,10 @@ const searchNode = (text) => {
         }
         closeToast();
     }, 50)
+}
+// 选择节点
+const chooseNode = (index, custom) => {
+    return allNodeList.value.filter(item => item.custom === custom && item.index === index)[0]
 }
 // 防抖函数
 let timer = null
@@ -375,16 +548,14 @@ const initStatus = () => {
         if (data_dir) {
             dataDir.value = data_dir;
         }
-        let coreType = realConfig.xrayHelper.coreType;
-        if (coreType === "mihomo") {
-            iframeShow.value = true;
-        } else if (coreType === "xray" || coreType === "sing-box") {
-            iframeShow.value = false;
-            xrayUIShow.value = true;
-            onLoad();
-        } else {
-            iframeShow.value = false;
+        let core_type = realConfig.xrayHelper.coreType;
+        if (core_type === 'v2ray' || core_type === 'hysteria2') {
             showToast(i18n.global.t('manage.not-support'))
+        } else if (core_type) {
+            coreType.value = core_type
+            if (core_type === 'xray' || core_type === 'sing-box') {
+                onLoad()
+            }
         }
     })
 }
@@ -397,7 +568,7 @@ initStatus()
     margin-right: 4px;
     vertical-align: middle;
     white-space: nowrap;
-    max-width: 70vw;
+    max-width: 55vw;
     text-overflow: ellipsis;
     overflow: hidden;
 }

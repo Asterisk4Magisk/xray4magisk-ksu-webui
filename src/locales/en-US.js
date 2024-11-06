@@ -43,7 +43,7 @@ export const manage = {
     'not-support': 'Not supporting the current core type.',
     'no-more': 'No more.',
     'edit-custom': 'Custom Node',
-    'route-manage': 'Routing',
+    'rule-manage': 'Routing',
     'more-setting': 'Settings',
     'load-balancing': 'Balancer',
     'load-switch-data-failed': 'Load switch data failed, an exception occurred.',
