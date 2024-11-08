@@ -175,6 +175,37 @@
                            :model-value="value" @update:model-value="v => dnsResult[currentDnsResult][key] = v"/>
             </van-list>
         </van-popup>
+        <!-- dnsrule manage -->
+        <van-popup v-model:show="dnsruleManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
+            <van-cell :title="$t('manage.dnsrule-manage')" title-style="max-width:100%;">
+                <template #right-icon>
+                    <van-icon size="1.2rem" name="plus" @click="addDnsrule"/>
+                </template>
+            </van-cell>
+            <van-cell-group>
+                <van-cell v-for="(item, index) in dnsruleResult" :key="index" center>
+                    <template #title>
+                        <span class="custom-title">{{ item.server }}</span>
+                    </template>
+                    <template #value>
+                        <van-space>
+                            <van-button plain hairline type="default" size="small" icon="arrow-up" @click="exchangeDnsrule(index,index-1)"/>
+                            <van-button plain hairline type="default" size="small" icon="arrow-down" @click="exchangeDnsrule(index,index+1)"/>
+                            <van-button plain hairline type="default" size="small" icon="edit" @click="editDnsrule(index)"/>
+                            <van-button plain hairline type="default" size="small" icon="cross" @click="deleteDnsrule(index)"/>
+                        </van-space>
+                    </template>
+                </van-cell>
+            </van-cell-group>
+        </van-popup>
+        <!-- dnsrule editor -->
+        <van-popup v-model:show="dnsruleEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveDnsrule">
+            <van-list>
+                <van-field v-for="(value, key) in dnsruleField"
+                           type="textarea" autosize :label="key + ':'" labelWidth="7em"
+                           :model-value="value" @update:model-value="v => dnsruleResult[currentDnsruleResult][key] = v"/>
+            </van-list>
+        </van-popup>
         <!-- 负载均衡的时候出现 -->
         <!-- <van-floating-bubble icon="checked" @click="onClick" /> -->
     </div>
@@ -203,6 +234,9 @@ import {
     newDnsObject as newDnsObjectSingbox,
     parseDnsObject as parseDnsObjectSingbox,
     standardizeDnsObject as standardizeDnsObjectSingbox,
+    newDnsruleObject as newDnsruleObjectSingbox,
+    parseDnsruleObject as parseDnsruleObjectSingbox,
+    standardizeDnsruleObject as standardizeDnsruleObjectSingbox,
 } from "./sing-box.js";
 import {Buffer} from "buffer";
 
@@ -228,6 +262,8 @@ const onSelect = (action) => {
         showRulesetManage()
     } else if (action.value === 'dns') {
         showDnsManage()
+    } else if (action.value === 'dnsrule') {
+        showDnsruleManage()
     }
 }
 const loading = ref(false);
@@ -522,6 +558,65 @@ const saveDns = async () => {
     await callApi(params)
     currentDnsResult.value = 0
     showDnsManage()
+}
+// dnsrule
+const dnsruleResult = ref([])
+const currentDnsruleResult = ref(0)
+const dnsruleField = computed(() => {
+    let result = {}
+    Object.assign(result, dnsruleResult.value[currentDnsruleResult.value])
+    delete result["index"]
+    delete result["newDnsrule"]
+    return result
+})
+const dnsruleManage = ref(false)
+const dnsruleEditor = ref(false)
+const showDnsruleManage = () => {
+    dnsruleManage.value = true
+    callApi(`get dnsrule`).then(value => {
+        dnsruleResult.value = value.result
+        for (let i = 0; i < dnsruleResult.value.length; i++) {
+            dnsruleResult.value[i] = parseDnsruleObjectSingbox(dnsruleResult.value[i])
+            dnsruleResult.value[i].index = i
+            dnsruleResult.value[i].newDnsrule = false
+        }
+    })
+}
+const addDnsrule = () => {
+    let dnsrule = newDnsruleObjectSingbox()
+    dnsrule.index = dnsruleResult.value.length
+    dnsrule.newDnsrule = true
+    dnsruleResult.value.push(dnsrule)
+    editDnsrule(dnsruleResult.value.length - 1)
+}
+const editDnsrule = (index) => {
+    currentDnsruleResult.value = index
+    dnsruleEditor.value = true
+}
+const exchangeDnsrule = async (a, b) => {
+    await callApi(`exchange dnsrule ${a} ${b}`)
+    showDnsruleManage()
+}
+const deleteDnsrule = async (index) => {
+    await callApi(`delete dnsrule ${index}`)
+    showDnsruleManage()
+}
+const saveDnsrule = async () => {
+    let params = []
+    if (dnsruleResult.value[currentDnsruleResult.value].newDnsrule) {
+        params.push("add")
+        params.push("dnsrule")
+    } else {
+        params.push("set")
+        params.push("dnsrule")
+        params.push(`${dnsruleResult.value[currentDnsruleResult.value].index}`)
+    }
+    // standardize
+    standardizeDnsruleObjectSingbox(dnsruleResult.value[currentDnsruleResult.value])
+    params.push(`${Buffer.from(JSON.stringify(dnsruleResult.value[currentDnsruleResult.value])).toString("base64")}`)
+    await callApi(params)
+    currentDnsruleResult.value = 0
+    showDnsruleManage()
 }
 // 点击切换节点按钮
 const switchChecked = (item) => {
