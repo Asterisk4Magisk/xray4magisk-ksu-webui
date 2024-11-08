@@ -45,6 +45,8 @@ export const manage = {
     'edit-custom': '自定义节点',
     'rule-manage': '路由规则',
     'ruleset-manage': '规则集',
+    'dns-manage': 'DNS服务器',
+    'dnsrule-manage': 'DNS规则',
     'more-setting': '更多设置',
     'load-balancing': '负载均衡',
     'load-switch-data-failed': '加载节点信息失败，发生异常。',

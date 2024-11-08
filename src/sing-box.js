@@ -43,6 +43,17 @@ export const newRulesetObject = () => {
         update_interval: "",
     }
 }
+export const newDnsObject = () => {
+    return {
+        tag: "",
+        address: "",
+        address_resolver: "",
+        address_strategy: "",
+        strategy: "",
+        detour: "",
+        client_subnet: ""
+    }
+}
 export const parseRuleObject = (rule) => {
     let result = newRuleObject()
     Object.keys(rule).forEach(key => {
@@ -61,6 +72,17 @@ export const parseRulesetObject = (ruleset) => {
             result[key] = ruleset[key]
         } else {
             result[key] = ruleset[key].toString()
+        }
+    })
+    return result
+}
+export const parseDnsObject = (dns) => {
+    let result = newDnsObject()
+    Object.keys(dns).forEach(key => {
+        if (key === "index" || key === "newDns" || dns[key].length === 0) {
+            result[key] = dns[key]
+        } else {
+            result[key] = dns[key].toString()
         }
     })
     return result
@@ -289,6 +311,13 @@ export const standardizeRulesetObject = (ruleset) => {
     Object.keys(ruleset).forEach(key => {
         if (key === "index" || key === "newRuleset" || ruleset[key].length === 0) {
             delete ruleset[key]
+        }
+    })
+}
+export const standardizeDnsObject = (dns) => {
+    Object.keys(dns).forEach(key => {
+        if (key === "index" || key === "newDns" || dns[key].length === 0) {
+            delete dns[key]
         }
     })
 }

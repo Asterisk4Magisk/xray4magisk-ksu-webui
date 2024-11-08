@@ -1,3 +1,5 @@
+import {newRulesetObject} from "./sing-box.js";
+
 export const newRuleObject = () => {
     return {
         domainMatcher: "",
@@ -16,6 +18,16 @@ export const newRuleObject = () => {
         ruleTag: ""
     }
 }
+export const newDnsObject = () => {
+    return {
+        address: "",
+        port: "",
+        domains: "",
+        expectIPs: "",
+        skipFallback: "",
+        clientIP: ""
+    }
+}
 export const parseRuleObject = (rule) => {
     let result = newRuleObject()
     Object.keys(rule).forEach(key => {
@@ -25,6 +37,21 @@ export const parseRuleObject = (rule) => {
             result[key] = rule[key].toString()
         }
     })
+    return result
+}
+export const parseDnsObject = (dns) => {
+    let result = newDnsObject()
+    if (typeof dns === "string") {
+        result.address = dns
+    }else{
+        Object.keys(dns).forEach(key => {
+            if (key === "index" || key === "newDns" || dns[key].length === 0) {
+                result[key] = dns[key]
+            } else {
+                result[key] = dns[key].toString()
+            }
+        })
+    }
     return result
 }
 export const standardizeRuleObject = (rule) => {
@@ -79,6 +106,38 @@ export const standardizeRuleObject = (rule) => {
                 arr[i] = arr[i].trim()
             }
             rule[key] = arr
+            return
+        }
+    })
+}
+export const standardizeDnsObject = (dns) => {
+    Object.keys(dns).forEach(key => {
+        if (key === "index" || key === "newDns" || dns[key].length === 0) {
+            delete dns[key]
+            return
+        }
+        if (key === "port") {
+            dns[key] = parseInt(dns[key])
+            return
+        }
+        if (key === "domains") {
+            let arr = dns[key].split(",")
+            for (let i = 0; i < arr.length; i++) {
+                arr[i] = arr[i].trim()
+            }
+            dns[key] = arr
+            return
+        }
+        if (key === "expectIPs") {
+            let arr = dns[key].split(",")
+            for (let i = 0; i < arr.length; i++) {
+                arr[i] = arr[i].trim()
+            }
+            dns[key] = arr
+            return
+        }
+        if (key === "skipFallback") {
+            dns[key] = JSON.parse(dns[key])
             return
         }
     })

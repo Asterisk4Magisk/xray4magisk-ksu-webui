@@ -146,6 +146,35 @@
                            :model-value="value" @update:model-value="v => rulesetResult[currentRulesetResult][key] = v"/>
             </van-list>
         </van-popup>
+        <!-- dns manage -->
+        <van-popup v-model:show="dnsManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
+            <van-cell :title="$t('manage.dns-manage')" title-style="max-width:100%;">
+                <template #right-icon>
+                    <van-icon size="1.2rem" name="plus" @click="addDns"/>
+                </template>
+            </van-cell>
+            <van-cell-group>
+                <van-cell v-for="(item, index) in dnsResult" :key="index" center>
+                    <template #title>
+                        <span class="custom-title">{{ coreType==='xray'?item.address:item.tag }}</span>
+                    </template>
+                    <template #value>
+                        <van-space>
+                            <van-button plain hairline type="default" size="small" icon="edit" @click="editDns(index)"/>
+                            <van-button plain hairline type="default" size="small" icon="cross" @click="deleteDns(index)"/>
+                        </van-space>
+                    </template>
+                </van-cell>
+            </van-cell-group>
+        </van-popup>
+        <!-- dns editor -->
+        <van-popup v-model:show="dnsEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveDns">
+            <van-list>
+                <van-field v-for="(value, key) in dnsField"
+                           type="textarea" autosize :label="key + ':'" labelWidth="7em"
+                           :model-value="value" @update:model-value="v => dnsResult[currentDnsResult][key] = v"/>
+            </van-list>
+        </van-popup>
         <!-- 负载均衡的时候出现 -->
         <!-- <van-floating-bubble icon="checked" @click="onClick" /> -->
     </div>
@@ -159,7 +188,10 @@ import {callApi, readFile, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
 import {
     newRuleObject as newRuleObjectXray,
     parseRuleObject as parseRuleObjectXray,
-    standardizeRuleObject as standardizeRuleObjectXray
+    standardizeRuleObject as standardizeRuleObjectXray,
+    newDnsObject as newDnsObjectXray,
+    parseDnsObject as parseDnsObjectXray,
+    standardizeDnsObject as standardizeDnsObjectXray,
 } from "./xray.js";
 import {
     newRuleObject as newRuleObjectSingbox,
@@ -167,7 +199,10 @@ import {
     standardizeRuleObject as standardizeRuleObjectSingbox,
     newRulesetObject as newRulesetObjectSingbox,
     parseRulesetObject as parseRulesetObjectSingbox,
-    standardizeRulesetObject as standardizeRulesetObjectSingbox
+    standardizeRulesetObject as standardizeRulesetObjectSingbox,
+    newDnsObject as newDnsObjectSingbox,
+    parseDnsObject as parseDnsObjectSingbox,
+    standardizeDnsObject as standardizeDnsObjectSingbox,
 } from "./sing-box.js";
 import {Buffer} from "buffer";
 
@@ -178,6 +213,7 @@ const coreType = ref("")
 const showMenu = ref(false);
 const actions = [
     {text: i18n.global.t('manage.edit-custom'), value: 'edit-custom', disabled: false},
+    {text: i18n.global.t('manage.dns-manage'), value: 'dns', disabled: false},
     {text: i18n.global.t('manage.rule-manage'), value: 'rule', disabled: false},
     //{text: i18n.global.t('manage.load-balancing'), value: 'balancing', disabled: true},
     //{text: i18n.global.t('manage.more-setting'), value: 'setting', disabled: true},
@@ -190,6 +226,8 @@ const onSelect = (action) => {
         showRuleManage()
     } else if (action.value === 'ruleset') {
         showRulesetManage()
+    } else if (action.value === 'dns') {
+        showDnsManage()
     }
 }
 const loading = ref(false);
@@ -412,6 +450,78 @@ const saveRuleset = async () => {
     await callApi(params)
     currentRulesetResult.value = 0
     showRulesetManage()
+}
+// dns
+const dnsResult = ref([])
+const currentDnsResult = ref(0)
+const dnsField = computed(() => {
+    let result = {}
+    Object.assign(result, dnsResult.value[currentDnsResult.value])
+    delete result["index"]
+    delete result["newDns"]
+    return result
+})
+const dnsManage = ref(false)
+const dnsEditor = ref(false)
+const showDnsManage = () => {
+    dnsManage.value = true
+    callApi(`get dns`).then(value => {
+        dnsResult.value = value.result
+        for (let i = 0; i < dnsResult.value.length; i++) {
+            if (coreType.value === "xray") {
+                dnsResult.value[i] = parseDnsObjectXray(dnsResult.value[i])
+            } else if (coreType.value === "sing-box") {
+                dnsResult.value[i] = parseDnsObjectSingbox(dnsResult.value[i])
+            }
+            dnsResult.value[i].index = i
+            dnsResult.value[i].newDns = false
+        }
+    })
+}
+const addDns = () => {
+    let dns
+    if (coreType.value === "xray") {
+        dns = newDnsObjectXray()
+    } else if (coreType.value === "sing-box") {
+        dns = newDnsObjectSingbox()
+    }
+    dns.index = dnsResult.value.length
+    dns.newDns = true
+    dnsResult.value.push(dns)
+    editDns(dnsResult.value.length - 1)
+}
+const editDns = (index) => {
+    currentDnsResult.value = index
+    dnsEditor.value = true
+}
+const deleteDns = async (index) => {
+    await callApi(`delete dns ${index}`)
+    showDnsManage()
+}
+const saveDns = async () => {
+    let params = []
+    if (dnsResult.value[currentDnsResult.value].newDns) {
+        params.push("add")
+        params.push("dns")
+    } else {
+        params.push("set")
+        params.push("dns")
+        params.push(`${dnsResult.value[currentDnsResult.value].index}`)
+    }
+    // standardize
+    if (coreType.value === "xray") {
+        standardizeDnsObjectXray(dnsResult.value[currentDnsResult.value])
+        let k = Object.keys(dnsResult.value[currentDnsResult.value])
+        if (k.length === 1 && k[0] === "address") {
+            dnsResult.value[currentDnsResult.value] = dnsResult.value[currentDnsResult.value]["address"]
+        }
+    } else if (coreType.value === "sing-box") {
+        standardizeDnsObjectSingbox(dnsResult.value[currentDnsResult.value])
+    }
+    params.push(`${Buffer.from(JSON.stringify(dnsResult.value[currentDnsResult.value])).toString("base64")}`)
+    await callApi(params)
+    currentDnsResult.value = 0
+    showDnsManage()
 }
 // 点击切换节点按钮
 const switchChecked = (item) => {
@@ -647,6 +757,7 @@ const initStatus = () => {
         } else if (core_type) {
             coreType.value = core_type
             if (core_type === 'sing-box') {
+                actions.push({text: i18n.global.t('manage.dnsrule-manage'), value: 'dnsrule', disabled: false})
                 actions.push({text: i18n.global.t('manage.ruleset-manage'), value: 'ruleset', disabled: false})
             }
             if (core_type === 'xray' || core_type === 'sing-box') {

@@ -45,6 +45,8 @@ export const manage = {
     'edit-custom': 'Custom Node',
     'rule-manage': 'Route Rule',
     'ruleset-manage': 'Rule Set',
+    'dns-manage': 'DNS Server',
+    'dnsrule-manage': 'DNS Rule',
     'more-setting': 'Settings',
     'load-balancing': 'Balancer',
     'load-switch-data-failed': 'Load switch data failed, an exception occurred.',
