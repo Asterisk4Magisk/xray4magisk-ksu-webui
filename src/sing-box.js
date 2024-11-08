@@ -372,7 +372,7 @@ export const standardizeDnsObject = (dns) => {
 }
 export const standardizeDnsruleObject = (rule) => {
     Object.keys(rule).forEach(key => {
-        if (key === "index" || key === "newRule" || rule[key].length === 0) {
+        if (key === "index" || key === "newDnsrule" || rule[key].length === 0) {
             delete rule[key]
             return
         }
