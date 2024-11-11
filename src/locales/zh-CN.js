@@ -34,6 +34,7 @@ export const dashboard = {
     'tool-update-geodata': '更新 Geodata 数据',
     'tool-update-subscribe': '更新订阅',
     'tool-update-yacd-meta': '更新 Yacd-Meta',
+    'tool-update-metacubexd': '更新 MetaCubeXD',
     'tool-update-tun2socks': '更新 Tun2socks',
     'tool-switch': '切换 Clash 订阅',
     'tool-switch-success': '切换成功',

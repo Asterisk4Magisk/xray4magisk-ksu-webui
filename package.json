@@ -19,9 +19,9 @@
   },
   "devDependencies": {
     "@vant/auto-import-resolver": "^1.2.1",
-    "@vitejs/plugin-vue": "^5.1.4",
+    "@vitejs/plugin-vue": "^5.1.5",
     "unplugin-auto-import": "^0.18.3",
     "unplugin-vue-components": "^0.27.4",
-    "vite": "^5.4.10"
+    "vite": "^5.4.11"
   }
 }

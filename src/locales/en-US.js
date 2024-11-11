@@ -34,6 +34,7 @@ export const dashboard = {
     'tool-update-geodata': 'Update Geodata',
     'tool-update-subscribe': 'Update Subscribe',
     'tool-update-yacd-meta': 'Update Yacd-Meta',
+    'tool-update-metacubexd': 'Update MetaCubeXD',
     'tool-update-tun2socks': 'Update Tun2socks',
     'tool-switch': 'Switch Clash Subscribe',
     'tool-switch-success': 'Switch success',

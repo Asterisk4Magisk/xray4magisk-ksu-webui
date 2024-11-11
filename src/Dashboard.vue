@@ -38,7 +38,7 @@
                         {{ $t('dashboard.tool-update-adghome') }}
                     </van-button>
                 </van-col>
-                <van-col span="11">
+                <van-col v-if="status.coreType==='v2ray'||status.coreType==='xray'" span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('geodata')">
                         {{ $t('dashboard.tool-update-geodata') }}
                     </van-button>
@@ -48,9 +48,14 @@
                         {{ $t('dashboard.tool-update-subscribe') }}
                     </van-button>
                 </van-col>
-                <van-col span="11">
+                <van-col v-if="status.coreType==='mihomo'" span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('yacd-meta')">
                         {{ $t('dashboard.tool-update-yacd-meta') }}
+                    </van-button>
+                </van-col>
+                <van-col v-if="status.coreType==='mihomo'" span="11">
+                    <van-button plain hairline type="default" block @click="execUpdateCmd('metacubexd')">
+                        {{ $t('dashboard.tool-update-metacubexd') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
