@@ -28,8 +28,8 @@
             <template #right>
                 <van-space wrap>
                     <van-icon
-                        name="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMxOTg5ZmEiIGQ9Ik0xMSA5LjQ3VjExaDMuNzZMMTMgMTQuNTNWMTNIOS4yNHpNMTMgMUw2IDE1aDV2OGw3LTE0aC01eiIvPjwvc3ZnPg=="
-                        size="1.2rem" @click="confirmSpeedtestAll()" />
+                            name="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMxOTg5ZmEiIGQ9Ik0xMSA5LjQ3VjExaDMuNzZMMTMgMTQuNTNWMTNIOS4yNHpNMTMgMUw2IDE1aDV2OGw3LTE0aC01eiIvPjwvc3ZnPg=="
+                            size="1.2rem" @click="confirmSpeedtestAll()" />
                     <van-icon name="filter-o" size="1.2rem" @click="searchText = !searchText" />
                 </van-space>
             </template>
@@ -62,21 +62,7 @@
             </van-cell-group>
         </van-list>
         <!-- switch custom editor -->
-        <van-popup v-model:show="switchCustomEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveSwitchCustom">
-            <van-cell :title="$t('manage.edit-custom')" title-style="max-width:100%;">
-                <template #right-icon>
-                    <van-icon size="1.2rem" name="plus" @click="addSwitchCustom"/>
-                </template>
-            </van-cell>
-            <van-list>
-                <van-field v-for="(item, idx) in switchCustomResult" :label="idx+':'" labelWidth="1.5em" :model-value="item"
-                           @update:model-value="v => editSwitchCustom(v, idx)">
-                    <template #right-icon>
-                        <van-icon size="1rem" name="cross" @click="deleteSwitchCustom(idx)"/>
-                    </template>
-                </van-field>
-            </van-list>
-        </van-popup>
+        <ListEditor :title="$t('manage.edit-custom')" v-model:show="switchCustomEditor" v-model:list="switchCustomResult" @closed="saveSwitchCustom"/>
         <!-- rule manage -->
         <van-popup v-model:show="ruleManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
             <van-cell :title="$t('manage.rule-manage')" title-style="max-width:100%;">
@@ -239,6 +225,7 @@ import {
     standardizeDnsruleObject as standardizeDnsruleObjectSingbox,
 } from "./sing-box.js";
 import {Buffer} from "buffer";
+import ListEditor from "./components/ListEditor.vue";
 
 defineProps(["theme"])
 const panelUrl = ref('http://127.0.0.1:65532/ui');
@@ -287,15 +274,6 @@ const showSwitchCustomEditor = () => {
             showSwitchCustomEditor()
         })
     })
-}
-const editSwitchCustom = (value, index) => {
-    switchCustomResult.value[index] = value
-}
-const deleteSwitchCustom = (index) => {
-    switchCustomResult.value.splice(index, 1)
-}
-const addSwitchCustom = () => {
-    switchCustomResult.value.push('')
 }
 const saveSwitchCustom = () => {
     let content = ""

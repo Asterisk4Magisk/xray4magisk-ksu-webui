@@ -85,10 +85,7 @@
             </van-radio-group>
         </van-popup>
         <!-- stdout receiver -->
-        <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'35%',maxHeight:'85%'}" @closed="refresh">
-            <van-cell :title="$t('common.stdout')" title-style="max-width:100%;" size="large"/>
-            <div class="stdout"><p>{{ stdout }}</p></div>
-        </van-popup>
+        <StdoutReceiver v-model:show="receiver" v-model:stdout="stdout" @closed="refresh"/>
     </van-pull-refresh>
 </template>
 
@@ -96,6 +93,7 @@
 import {ref} from 'vue';
 import {callApi, execCmd, execXrayHelperCmd, readFile, saveFile} from "./tools.js";
 import i18n from "./locales/i18n.js"
+import StdoutReceiver from "./components/StdoutReceiver.vue";
 
 defineProps(["theme"]);
 const MODULE_PROP = "/data/adb/modules/xray4magisk/module.prop"
@@ -226,9 +224,4 @@ initStatus()
 </script>
 
 <style>
-.stdout {
-    white-space: pre-line;
-    margin-left: 1em;
-    margin-right: 1em;
-}
 </style>

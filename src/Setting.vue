@@ -106,140 +106,34 @@
                       clickable @click="intraListEditor = true"/>
         </van-cell-group>
     </van-pull-refresh>
-    <!-- popup: xrayhelper editors -->
-    <van-popup v-model:show="corePathEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-core-path')" v-model="config.xrayHelper.corePath"/>
-    </van-popup>
-    <van-popup v-model:show="coreConfigEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-core-config')" v-model="config.xrayHelper.coreConfig"/>
-    </van-popup>
-    <van-popup v-model:show="dataDirEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-data-dir')" v-model="config.xrayHelper.dataDir"/>
-    </van-popup>
-    <van-popup v-model:show="runDirEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-run-dir')" v-model="config.xrayHelper.runDir"/>
-    </van-popup>
-    <van-popup v-model:show="cpuLimitEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-cpu-limit')" v-model.number="config.xrayHelper.cpuLimit"/>
-    </van-popup>
-    <van-popup v-model:show="memLimitEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-mem-limit')" v-model.number="config.xrayHelper.memLimit"/>
-    </van-popup>
-    <van-popup v-model:show="proxyTagEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-proxy-tag')" v-model="config.xrayHelper.proxyTag"/>
-    </van-popup>
-    <van-popup v-model:show="subListEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-cell :title="$t('setting.xrayhelper-sub-list')" title-style="max-width:100%;">
-            <template #right-icon>
-                <van-icon size="1.2rem" name="plus" @click="addSubList"/>
-            </template>
-        </van-cell>
-        <van-list>
-            <van-field v-for="(item, idx) in config.xrayHelper.subList" :label="idx+':'" labelWidth="1.5em" :model-value="item"
-                       @update:model-value="v => editSubList(v, idx)">
-                <template #right-icon>
-                    <van-icon size="1rem" name="cross" @click="deleteSubList(idx)"/>
-                </template>
-            </van-field>
-        </van-list>
-    </van-popup>
-    <van-popup v-model:show="userAgentEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.xrayhelper-user-agent')" v-model="config.xrayHelper.userAgent"/>
-    </van-popup>
-    <!-- popup: clash editors -->
-    <van-popup v-model:show="clashDnsPortEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.clash-dns-port')" v-model.number="config.clash.dnsPort"/>
-    </van-popup>
-    <van-popup v-model:show="clashTemplateEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.clash-template')" v-model="config.clash.template"/>
-    </van-popup>
-    <van-popup v-model:show="clashApiEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.panel-url')" v-model="config.clash.panelUrl"/>
-    </van-popup>
-    <!-- popup: adgHome editors -->
-    <van-popup v-model:show="adgHomeAddressEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.adghome-address')" v-model="config.adgHome.address"/>
-    </van-popup>
-    <van-popup v-model:show="adgHomeWorkDirEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.adghome-work-dir')" v-model="config.adgHome.workDir"/>
-    </van-popup>
-    <van-popup v-model:show="adgHomeDnsPortEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.adghome-dns-port')" v-model.number="config.adgHome.dnsPort"/>
-    </van-popup>
-    <!-- popup: proxy editors -->
-    <van-popup v-model:show="tproxyPortEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.proxy-tproxy-port')" v-model.number="config.proxy.tproxyPort"/>
-    </van-popup>
-    <van-popup v-model:show="socksPortEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.proxy-socks-port')" v-model.number="config.proxy.socksPort"/>
-    </van-popup>
-    <van-popup v-model:show="tunDeviceEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-field class="config" :label="$t('setting.proxy-tun-device')" v-model="config.proxy.tunDevice"/>
-    </van-popup>
-    <van-popup v-model:show="pkgListEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-cell :title="$t('setting.proxy-pkg-list')" title-style="max-width:100%;">
-            <template #right-icon>
-                <van-icon size="1.2rem" name="plus" @click="addPkgList"/>
-            </template>
-        </van-cell>
-        <van-list>
-            <van-field v-for="(item, idx) in config.proxy.pkgList" :label="idx+':'" labelWidth="1.5em" :model-value="item"
-                       @update:model-value="v => editPkgList(v, idx)">
-                <template #right-icon>
-                    <van-icon size="1rem" name="cross" @click="deletePkgList(idx)"/>
-                </template>
-            </van-field>
-        </van-list>
-    </van-popup>
-    <van-popup v-model:show="apListEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-cell :title="$t('setting.proxy-ap-list')" title-style="max-width:100%;">
-            <template #right-icon>
-                <van-icon size="1.2rem" name="plus" @click="addApList"/>
-            </template>
-        </van-cell>
-        <van-list>
-            <van-field v-for="(item, idx) in config.proxy.apList" :label="idx+':'" labelWidth="1.5em" :model-value="item"
-                       @update:model-value="v => editApList(v, idx)">
-                <template #right-icon>
-                    <van-icon size="1rem" name="cross" @click="deleteApList(idx)"/>
-                </template>
-            </van-field>
-        </van-list>
-    </van-popup>
-    <van-popup v-model:show="ignoreListEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-cell :title="$t('setting.proxy-ignore-list')" title-style="max-width:100%;">
-            <template #right-icon>
-                <van-icon size="1.2rem" name="plus" @click="addIgnoreList"/>
-            </template>
-        </van-cell>
-        <van-list>
-            <van-field v-for="(item, idx) in config.proxy.ignoreList" :label="idx+':'" labelWidth="1.5em" :model-value="item"
-                       @update:model-value="v => editIgnoreList(v, idx)">
-                <template #right-icon>
-                    <van-icon size="1rem" name="cross" @click="deleteIgnoreList(idx)"/>
-                </template>
-            </van-field>
-        </van-list>
-    </van-popup>
-    <van-popup v-model:show="intraListEditor" round :style="{ width: '90%' ,maxHeight:'85%'}" @closed="saveConfig">
-        <van-cell :title="$t('setting.proxy-intra-list')" title-style="max-width:100%;">
-            <template #right-icon>
-                <van-icon size="1.2rem" name="plus" @click="addIntraList"/>
-            </template>
-        </van-cell>
-        <van-list>
-            <van-field v-for="(item, idx) in config.proxy.intraList" :label="idx+':'" labelWidth="1.5em" :model-value="item"
-                       @update:model-value="v => editIntraList(v, idx)">
-                <template #right-icon>
-                    <van-icon size="1rem" name="cross" @click="deleteIntraList(idx)"/>
-                </template>
-            </van-field>
-        </van-list>
-    </van-popup>
-    <van-popup v-model:show="receiver" round :style="{ width: '90%' ,minHeight:'30%',maxHeight:'85%'}" >
-        <van-cell :title="$t('common.stdout')" title-style="max-width:100%;" size="large"/>
-        <div class="stdout"><p>{{ stdout }}</p></div>
-    </van-popup>
+    <!-- xrayhelper editors -->
+    <FieldEditor :label="$t('setting.xrayhelper-core-path')" tips="tips" v-model:show="corePathEditor" v-model:field="config.xrayHelper.corePath" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.xrayhelper-core-config')" tips="tips" v-model:show="coreConfigEditor" v-model:field="config.xrayHelper.coreConfig" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.xrayhelper-data-dir')" tips="tips" v-model:show="dataDirEditor" v-model:field="config.xrayHelper.dataDir" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.xrayhelper-run-dir')" tips="tips" v-model:show="runDirEditor" v-model:field="config.xrayHelper.runDir" @closed="saveConfig"/>
+    <FieldEditor number :label="$t('setting.xrayhelper-cpu-limit')" tips="tips" v-model:show="cpuLimitEditor" v-model:field="config.xrayHelper.cpuLimit" @closed="saveConfig"/>
+    <FieldEditor number :label="$t('setting.xrayhelper-mem-limit')" tips="tips" v-model:show="memLimitEditor" v-model:field="config.xrayHelper.memLimit" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.xrayhelper-proxy-tag')" tips="tips" v-model:show="proxyTagEditor" v-model:field="config.xrayHelper.proxyTag" @closed="saveConfig"/>
+    <ListEditor :title="$t('setting.xrayhelper-sub-list')" v-model:show="subListEditor" v-model:list="config.xrayHelper.subList" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.xrayhelper-user-agent')" tips="tips" v-model:show="userAgentEditor" v-model:field="config.xrayHelper.userAgent" @closed="saveConfig"/>
+    <!-- clash editors -->
+    <FieldEditor number :label="$t('setting.clash-dns-port')" tips="tips" v-model:show="clashDnsPortEditor" v-model:field="config.clash.dnsPort" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.clash-template')" tips="tips" v-model:show="clashTemplateEditor" v-model:field="config.clash.template" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.panel-url')" tips="tips" v-model:show="clashApiEditor" v-model:field="config.clash.panelUrl" @closed="saveConfig"/>
+    <!-- adgHome editors -->
+    <FieldEditor :label="$t('setting.adghome-address')" tips="tips" v-model:show="adgHomeAddressEditor" v-model:field="config.adgHome.address" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.adghome-work-dir')" tips="tips" v-model:show="adgHomeWorkDirEditor" v-model:field="config.adgHome.workDir" @closed="saveConfig"/>
+    <FieldEditor number :label="$t('setting.adghome-dns-port')" tips="tips" v-model:show="adgHomeDnsPortEditor" v-model:field="config.adgHome.dnsPort" @closed="saveConfig"/>
+    <!-- proxy editors -->
+    <FieldEditor number :label="$t('setting.proxy-tproxy-port')" tips="tips" v-model:show="tproxyPortEditor" v-model:field="config.proxy.tproxyPort" @closed="saveConfig"/>
+    <FieldEditor number :label="$t('setting.proxy-socks-port')" tips="tips" v-model:show="socksPortEditor" v-model:field="config.proxy.socksPort" @closed="saveConfig"/>
+    <FieldEditor :label="$t('setting.proxy-tun-device')" tips="tips" v-model:show="tunDeviceEditor" v-model:field="config.proxy.tunDevice" @closed="saveConfig"/>
+    <ListEditor :title="$t('setting.proxy-pkg-list')" v-model:show="pkgListEditor" v-model:list="config.proxy.pkgList" @closed="saveConfig"/>
+    <ListEditor :title="$t('setting.proxy-ap-list')" v-model:show="apListEditor" v-model:list="config.proxy.apList" @closed="saveConfig"/>
+    <ListEditor :title="$t('setting.proxy-ignore-list')" v-model:show="ignoreListEditor" v-model:list="config.proxy.ignoreList" @closed="saveConfig"/>
+    <ListEditor :title="$t('setting.proxy-intra-list')" v-model:show="intraListEditor" v-model:list="config.proxy.intraList" @closed="saveConfig"/>
+    <!-- stdout receiver -->
+    <StdoutReceiver v-model:show="receiver" v-model:stdout="stdout" @closed="() => this.stdout.value = ''"/>
 </template>
 
 <script setup>
@@ -247,6 +141,9 @@ import {ref} from 'vue'
 import i18n from "./locales/i18n.js"
 import YAML from "yaml"
 import {callApi, readFile,execCmdWithExitCode,execXrayHelperCmd, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
+import ListEditor from "./components/ListEditor.vue";
+import StdoutReceiver from "./components/StdoutReceiver.vue";
+import FieldEditor from "./components/FieldEditor.vue";
 
 defineProps(["theme"])
 const loading = ref(false)
@@ -311,15 +208,6 @@ const changeAllowInsecure = (choose) => {
     saveConfig()
 }
 const subListEditor = ref(false)
-const editSubList = (value, index) => {
-    config.value.xrayHelper.subList[index] = value
-}
-const deleteSubList = (index) => {
-    config.value.xrayHelper.subList.splice(index, 1)
-}
-const addSubList = () => {
-    config.value.xrayHelper.subList.push('')
-}
 const userAgentEditor = ref(false)
 // clash
 const clashDnsPortEditor = ref(false)
@@ -381,45 +269,9 @@ const changeMode = (mode) => {
     saveConfig()
 }
 const pkgListEditor = ref(false)
-const editPkgList = (value, index) => {
-    config.value.proxy.pkgList[index] = value
-}
-const deletePkgList = (index) => {
-    config.value.proxy.pkgList.splice(index, 1)
-}
-const addPkgList = () => {
-    config.value.proxy.pkgList.push('')
-}
 const apListEditor = ref(false)
-const editApList = (value, index) => {
-    config.value.proxy.apList[index] = value
-}
-const deleteApList = (index) => {
-    config.value.proxy.apList.splice(index, 1)
-}
-const addApList = () => {
-    config.value.proxy.apList.push('')
-}
 const ignoreListEditor = ref(false)
-const editIgnoreList = (value, index) => {
-    config.value.proxy.ignoreList[index] = value
-}
-const deleteIgnoreList = (index) => {
-    config.value.proxy.ignoreList.splice(index, 1)
-}
-const addIgnoreList = () => {
-    config.value.proxy.ignoreList.push('')
-}
 const intraListEditor = ref(false)
-const editIntraList = (value, index) => {
-    config.value.proxy.intraList[index] = value
-}
-const deleteIntraList = (index) => {
-    config.value.proxy.intraList.splice(index, 1)
-}
-const addIntraList = () => {
-    config.value.proxy.intraList.push('')
-}
 
 const config = ref()
 
@@ -524,9 +376,5 @@ const initConfig = () => {
 }
 initConfig()
 </script>
-
 <style>
-.config {
-    --van-field-label-width: 7em;
-}
 </style>
