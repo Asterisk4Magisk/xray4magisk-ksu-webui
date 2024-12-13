@@ -25,7 +25,7 @@
                       clickable @click="memLimitEditor = true"/>
             <van-cell v-if="config.xrayHelper.coreType !== 'mihomo'" :title="$t('setting.xrayhelper-proxy-tag')" title-style="max-width:35%;" :value="config.xrayHelper.proxyTag"
                       clickable @click="proxyTagEditor = true"/>
-            <van-popover v-if="config.xrayHelper.coreType !== 'mihomo'" :actions="boolc" @select="changeAllowInsecure" placement="bottom-end">
+            <van-popover v-if="config.xrayHelper.coreType !== 'mihomo'" :actions="boolc" @select="(choose) => {config.value.xrayHelper.allowInsecure = choose.value;saveConfig();}" placement="bottom-end">
                 <template #reference>
                     <van-cell :title="$t('setting.xrayhelper-allow-insecure')" title-style="max-width:35%;"
                               :value="config.xrayHelper.allowInsecure.toString()" clickable/>
@@ -48,7 +48,7 @@
         </van-cell-group>
         <!-- cell-group: adgHome options -->
         <van-cell-group :title="$t('setting.adghome')" inset>
-            <van-popover :actions="boolc" @select="changeEnableAdgHome" placement="bottom-end">
+            <van-popover :actions="boolc" @select="(choose) => {config.value.adgHome.enable = choose.value;saveConfig();}" placement="bottom-end">
                 <template #reference>
                     <van-cell :title="$t('setting.adghome-enable')" title-style="max-width:35%;"
                               :value="config.adgHome.enable.toString()" clickable/>
@@ -64,7 +64,7 @@
         </van-cell-group>
         <!-- cell-group: proxy options -->
         <van-cell-group :title="$t('setting.proxy')" inset>
-            <van-popover :actions="method" @select="changeMethod" placement="bottom-end">
+            <van-popover :actions="method" @select="(m) => {config.value.proxy.method = m.value;saveConfig();}" placement="bottom-end">
                 <template #reference>
                     <van-cell :title="$t('setting.proxy-method')" title-style="max-width:35%;" :value="config.proxy.method" clickable/>
                     <div/>
@@ -76,21 +76,21 @@
                       clickable @click="socksPortEditor = true"/>
             <van-cell v-if="config.proxy.method === 'tun2socks' || config.proxy.method === 'tun'" :title="$t('setting.proxy-tun-device')" title-style="max-width:35%;" :value="config.proxy.tunDevice" clickable
                       @click="tunDeviceEditor = true"/>
-            <van-popover :actions="boolc" @select="changeEnableIPv6" placement="bottom-end">
+            <van-popover :actions="boolc" @select="(choose) => {config.value.proxy.enableIPv6 = choose.value;saveConfig();}" placement="bottom-end">
                 <template #reference>
                     <van-cell :title="$t('setting.proxy-enable-ipv6')" title-style="max-width:35%;"
                               :value="config.proxy.enableIPv6.toString()" clickable/>
                     <div/>
                 </template>
             </van-popover>
-            <van-popover :actions="boolc" @select="changeAutoDNSStrategy" placement="bottom-end">
+            <van-popover :actions="boolc" @select="(choose) => {config.value.proxy.autoDNSStrategy = choose.value;saveConfig();}" placement="bottom-end">
                 <template #reference>
                     <van-cell :title="$t('setting.proxy-auto-dns-strategy')" title-style="max-width:35%;"
                               :value="config.proxy.autoDNSStrategy.toString()" clickable/>
                     <div/>
                 </template>
             </van-popover>
-            <van-popover v-if="config.proxy.method !== 'tun'" :actions="mode" @select="changeMode" placement="bottom-end">
+            <van-popover v-if="config.proxy.method !== 'tun'" :actions="mode" @select="(m) => {config.value.proxy.mode = m.value;saveConfig();}" placement="bottom-end">
                 <template #reference>
                     <van-cell :title="$t('setting.proxy-mode')" title-style="max-width:35%;" :value="config.proxy.mode" clickable/>
                     <div/>
@@ -196,52 +196,13 @@ const changeCoreType = (core) => {
         () => resolve(true)
     });
 }
-const corePathEditor = ref(false)
-const coreConfigEditor = ref(false)
-const dataDirEditor = ref(false)
-const runDirEditor = ref(false)
-const cpuLimitEditor = ref(false)
-const memLimitEditor = ref(false)
-const proxyTagEditor = ref(false)
-const changeAllowInsecure = (choose) => {
-    config.value.xrayHelper.allowInsecure = choose.value
-    saveConfig()
-}
-const subListEditor = ref(false)
-const userAgentEditor = ref(false)
-// clash
-const clashDnsPortEditor = ref(false)
-const clashTemplateEditor = ref(false)
-const clashApiEditor = ref(false)
-// adgHome
-const changeEnableAdgHome = (choose) => {
-    config.value.adgHome.enable = choose.value
-    saveConfig()
-}
-const adgHomeAddressEditor = ref(false)
-const adgHomeWorkDirEditor = ref(false)
-const adgHomeDnsPortEditor = ref(false)
-// proxy
-const method = [
-    {text: 'tproxy', value: 'tproxy'},
-    {text: 'tun', value: 'tun'},
-    {text: 'tun2socks', value: 'tun2socks'},
-];
-const changeMethod = (method) => {
-    config.value.proxy.method = method.value
-    saveConfig()
-}
-const tproxyPortEditor = ref(false)
-const socksPortEditor = ref(false)
-const tunDeviceEditor = ref(false)
-
 const checkCoreBin = (corePath) => {
     execCmdWithExitCode(`ls ${corePath}`).then(errno => {
         if(errno!==0){
             showConfirmDialog({
                 message: i18n.global.t('setting.core-not-found'),
             }).then(() => {
-            // on close
+                // on close
                 receiver.value = true
                 setTimeout(() => {
                     execXrayHelperCmd("update core").then(value => {
@@ -252,29 +213,42 @@ const checkCoreBin = (corePath) => {
         }
     })
 }
-const changeEnableIPv6 = (choose) => {
-    config.value.proxy.enableIPv6 = choose.value
-    saveConfig()
-}
-const changeAutoDNSStrategy = (choose) => {
-    config.value.proxy.autoDNSStrategy = choose.value
-    saveConfig()
-}
+const corePathEditor = ref(false)
+const coreConfigEditor = ref(false)
+const dataDirEditor = ref(false)
+const runDirEditor = ref(false)
+const cpuLimitEditor = ref(false)
+const memLimitEditor = ref(false)
+const proxyTagEditor = ref(false)
+const subListEditor = ref(false)
+const userAgentEditor = ref(false)
+// clash
+const clashDnsPortEditor = ref(false)
+const clashTemplateEditor = ref(false)
+const clashApiEditor = ref(false)
+// adgHome
+const adgHomeAddressEditor = ref(false)
+const adgHomeWorkDirEditor = ref(false)
+const adgHomeDnsPortEditor = ref(false)
+// proxy
+const method = [
+    {text: 'tproxy', value: 'tproxy'},
+    {text: 'tun', value: 'tun'},
+    {text: 'tun2socks', value: 'tun2socks'},
+];
+const tproxyPortEditor = ref(false)
+const socksPortEditor = ref(false)
+const tunDeviceEditor = ref(false)
 const mode = [
     {text: 'whitelist', value: 'whitelist'},
     {text: 'blacklist', value: 'blacklist'},
 ];
-const changeMode = (mode) => {
-    config.value.proxy.mode = mode.value
-    saveConfig()
-}
 const pkgListEditor = ref(false)
 const apListEditor = ref(false)
 const ignoreListEditor = ref(false)
 const intraListEditor = ref(false)
 
 const config = ref()
-
 function baseConfig() {
     return {
         xrayHelper: {
@@ -316,7 +290,6 @@ function baseConfig() {
         }
     }
 }
-
 const getConfig = async () => {
     return await readFile(XRAYHELPER_CONFIG).then(value => {
         return YAML.parse(value)
@@ -324,7 +297,6 @@ const getConfig = async () => {
         showToast(i18n.global.t('setting.cannot-get-config') + ex)
     })
 }
-
 const saveConfig = () => {
     saveFile(YAML.stringify(config.value, {indent: 4}), XRAYHELPER_CONFIG)
     setTimeout(() => {
@@ -337,7 +309,6 @@ const saveConfig = () => {
         })
     }, 50)
 }
-
 const onRefresh = () => {
     setTimeout(() => {
         initConfig()
