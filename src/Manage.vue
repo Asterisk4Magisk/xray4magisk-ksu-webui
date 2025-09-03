@@ -17,9 +17,9 @@
                 <van-cell-group inset>
                     <!-- clearable 在电脑上无效，手机上好使(个人感觉没必要修复,减小打包后的体积)，解决方案，https://vant-ui.github.io/vant/#/zh-CN/advanced-usage#zhuo-mian-duan-gua-pei -->
                     <van-field v-show="searchText" v-model="nodeName" center clearable
-                               :placeholder="i18n.global.t('manage.placeholder-text')">
+                               :placeholder="t('manage.placeholder-text')">
                         <template #button>
-                            <!-- <van-button size="mini" type="primary" @click="searchNode(nodeName)">{{i18n.global.t('manage.search')}}</van-button> -->
+                            <!-- <van-button size="mini" type="primary" @click="searchNode(nodeName)">{{t('manage.search')}}</van-button> -->
                             <van-icon name="search" size="1.1rem" @click="searchNode(nodeName)" />
                         </template>
                     </van-field>
@@ -34,7 +34,7 @@
                 </van-space>
             </template>
         </van-nav-bar>
-        <van-list v-model:loading="loading" :finished="finished" :finished-text="i18n.global.t('manage.no-more')">
+        <van-list v-model:loading="loading" :finished="finished" :finished-text="t('manage.no-more')">
             <van-cell-group style="top: 46px;">
                 <van-cell v-for="(item, index) in showNodeList" :key="index" center>
                     <template #title>
@@ -62,10 +62,10 @@
             </van-cell-group>
         </van-list>
         <!-- switch custom editor -->
-        <ListEditor :title="$t('manage.edit-custom')" v-model:show="switchCustomEditor" v-model:list="switchCustomResult" @closed="saveSwitchCustom"/>
+        <ListEditor :title="t('manage.edit-custom')" v-model:show="switchCustomEditor" v-model:list="switchCustomResult" @closed="saveSwitchCustom"/>
         <!-- rule manage -->
         <van-popup v-model:show="ruleManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
-            <van-cell :title="$t('manage.rule-manage')" title-style="max-width:100%;">
+            <van-cell :title="t('manage.rule-manage')" title-style="max-width:100%;">
                 <template #right-icon>
                     <van-icon size="1.2rem" name="plus" @click="addRule"/>
                 </template>
@@ -105,7 +105,7 @@
         </van-popup>
         <!-- ruleset manage -->
         <van-popup v-model:show="rulesetManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
-            <van-cell :title="$t('manage.ruleset-manage')" title-style="max-width:100%;">
+            <van-cell :title="t('manage.ruleset-manage')" title-style="max-width:100%;">
                 <template #right-icon>
                     <van-icon size="1.2rem" name="plus" @click="addRuleset"/>
                 </template>
@@ -134,7 +134,7 @@
         </van-popup>
         <!-- dns manage -->
         <van-popup v-model:show="dnsManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
-            <van-cell :title="$t('manage.dns-manage')" title-style="max-width:100%;">
+            <van-cell :title="t('manage.dns-manage')" title-style="max-width:100%;">
                 <template #right-icon>
                     <van-icon size="1.2rem" name="plus" @click="addDns"/>
                 </template>
@@ -163,7 +163,7 @@
         </van-popup>
         <!-- dnsrule manage -->
         <van-popup v-model:show="dnsruleManage" round :style="{ width: '90%' ,maxHeight:'85%'}">
-            <van-cell :title="$t('manage.dnsrule-manage')" title-style="max-width:100%;">
+            <van-cell :title="t('manage.dnsrule-manage')" title-style="max-width:100%;">
                 <template #right-icon>
                     <van-icon size="1.2rem" name="plus" @click="addDnsrule"/>
                 </template>
@@ -198,8 +198,9 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 import {ref, computed} from 'vue'
-import i18n from "./locales/i18n.js"
 import YAML from "yaml"
 import {callApi, readFile, saveFile, XRAYHELPER_CONFIG} from "./tools.js"
 import {
@@ -233,11 +234,11 @@ const dataDir = ref('/data/adb/xray/data');
 const coreType = ref("")
 const showMenu = ref(false);
 const actions = [
-    {text: i18n.global.t('manage.edit-custom'), value: 'edit-custom', disabled: false},
-    {text: i18n.global.t('manage.dns-manage'), value: 'dns', disabled: false},
-    {text: i18n.global.t('manage.rule-manage'), value: 'rule', disabled: false},
-    //{text: i18n.global.t('manage.load-balancing'), value: 'balancing', disabled: true},
-    //{text: i18n.global.t('manage.more-setting'), value: 'setting', disabled: true},
+    {text: t('manage.edit-custom'), value: 'edit-custom', disabled: false},
+    {text: t('manage.dns-manage'), value: 'dns', disabled: false},
+    {text: t('manage.rule-manage'), value: 'rule', disabled: false},
+    //{text: t('manage.load-balancing'), value: 'balancing', disabled: true},
+    //{text: t('manage.more-setting'), value: 'setting', disabled: true},
 ];
 const onSelect = (action) => {
     // 左上角菜单
@@ -604,9 +605,9 @@ const switchChecked = (item) => {
     let api = item.custom ? `set switch custom ${item.index}` : `set switch ${item.index}`
     callApi(api).then(value => {
         if (value.ok) {
-            showToast(i18n.global.t('dashboard.tool-switch-success'))
+            showToast(t('dashboard.tool-switch-success'))
         } else {
-            showToast(i18n.global.t('dashboard.tool-switch-failed'))
+            showToast(t('dashboard.tool-switch-failed'))
         }
         for (const node of allNodeList.value) {
             if (node.selected) {
@@ -624,7 +625,7 @@ const searchNode = (text) => {
     showLoadingToast({
         duration: 0,
         forbidClick: true,
-        message: i18n.global.t('manage.search'),
+        message: t('manage.search'),
     });
     //不设置这个会卡一下，操作不友好，等一下下吧
     setTimeout(() => {
@@ -669,10 +670,10 @@ const debounce = (func, delay = 1000, immediate = false) => {
 }
 const confirmSpeedtestAll = () => {
     if (!allowSpeedtest) {
-        showToast(i18n.global.t('manage.speedtest-reject'))
+        showToast(t('manage.speedtest-reject'))
     } else {
         showConfirmDialog({
-            message: i18n.global.t('manage.speedtest-all-warn'),
+            message: t('manage.speedtest-all-warn'),
         }).then(() => {
             speedtestAll()
         }).catch(() => {
@@ -728,7 +729,7 @@ const startSpeedtest = async (custom) => {
                 node.show = true;
             }
         }).catch(ex => {
-            showToast(i18n.global.t('manage.speedtest-failed') + ex)
+            showToast(t('manage.speedtest-failed') + ex)
         }).finally(() => {
             for (const node of nowTest) {
                 node.speedtestLoading = false;
@@ -741,7 +742,7 @@ const startSpeedtest = async (custom) => {
 // 测速
 const clickSpeedtest = (item) => {
     if (item.speedtestLoading === true || (speedTestList.value.length > 0 && speedTestList.value[0].custom !== item.custom)) {
-        showToast(i18n.global.t('manage.speedtest-reject'));
+        showToast(t('manage.speedtest-reject'));
         return;
     }
     speedTestList.value.push(item);
@@ -794,7 +795,7 @@ const initXrayData = async () => {
         showNodeList.value.push(...nodeData);
         console.info('initXrayData complete')
     }).catch(ex => {
-        showToast(i18n.global.t('manage.load-switch-data-failed') + ex)
+        showToast(t('manage.load-switch-data-failed') + ex)
     })
 }
 const onLoad = async () => {
@@ -811,7 +812,7 @@ const getConfig = async () => {
     return await readFile(XRAYHELPER_CONFIG).then(value => {
         return YAML.parse(value)
     }).catch(ex => {
-        showToast(i18n.global.t('setting.cannot-get-config') + ex)
+        showToast(t('setting.cannot-get-config') + ex)
     })
 }
 const initStatus = () => {
@@ -826,12 +827,12 @@ const initStatus = () => {
         }
         let core_type = realConfig.xrayHelper.coreType;
         if (core_type === 'v2ray' || core_type === 'hysteria2') {
-            showToast(i18n.global.t('manage.not-support'))
+            showToast(t('manage.not-support'))
         } else if (core_type) {
             coreType.value = core_type
             if (core_type === 'sing-box') {
-                actions.push({text: i18n.global.t('manage.dnsrule-manage'), value: 'dnsrule', disabled: false})
-                actions.push({text: i18n.global.t('manage.ruleset-manage'), value: 'ruleset', disabled: false})
+                actions.push({text: t('manage.dnsrule-manage'), value: 'dnsrule', disabled: false})
+                actions.push({text: t('manage.ruleset-manage'), value: 'ruleset', disabled: false})
             }
             if (core_type === 'xray' || core_type === 'sing-box') {
                 onLoad()
