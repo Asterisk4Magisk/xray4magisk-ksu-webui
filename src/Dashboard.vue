@@ -1,71 +1,71 @@
 <template>
-    <van-pull-refresh v-model="loading" :disabled="disablePull" @refresh="onRefresh" :pulling-text="$t('common.pulling-text')"
-                      :loosing-text="$t('common.loosing-text')" :loading-text="$t('common.loading-text')">
+    <van-pull-refresh v-model="loading" :disabled="disablePull" @refresh="onRefresh" :pulling-text="t('common.pulling-text')"
+                      :loosing-text="t('common.loosing-text')" :loading-text="t('common.loading-text')">
         <!-- cell-group version -->
-        <van-cell-group :title="$t('dashboard.version')" inset>
-            <van-cell :title="$t('dashboard.version-module')" title-style="max-width:35%;" :value="version"
+        <van-cell-group :title="t('dashboard.version')" inset>
+            <van-cell :title="t('dashboard.version-module')" title-style="max-width:35%;" :value="version"
                       url="https://github.com/Asterisk4Magisk/Xray4Magisk" clickable/>
-            <van-cell :title="$t('dashboard.version-dashboard')" title-style="max-width:35%;" :value="$t('common.dashboard-version')"
+            <van-cell :title="t('dashboard.version-dashboard')" title-style="max-width:35%;" :value="t('common.dashboard-version')"
                       url="https://github.com/Asterisk4Magisk/xray4magisk-ksu-webui" clickable/>
         </van-cell-group>
         <!-- cell-group status -->
-        <van-cell-group :title="$t('dashboard.status')" inset>
-            <van-cell :title="$t('dashboard.status-core-type')" title-style="max-width:35%;" :value="status.coreType"/>
+        <van-cell-group :title="t('dashboard.status')" inset>
+            <van-cell :title="t('dashboard.status-core-type')" title-style="max-width:35%;" :value="status.coreType"/>
             <van-popover :actions="serviceCmd" @select="execServiceCmd" placement="bottom-end">
                 <template #reference>
-                    <van-cell :title="$t('dashboard.status-core-status')" title-style="max-width:35%;" :value="coreStatus" clickable/>
+                    <van-cell :title="t('dashboard.status-core-status')" title-style="max-width:35%;" :value="coreStatus" clickable/>
                     <div/>
                 </template>
             </van-popover>
-            <van-cell v-show="running" :title="$t('dashboard.status-core-pid')" title-style="max-width:35%;" :value="status.pid"/>
+            <van-cell v-show="running" :title="t('dashboard.status-core-pid')" title-style="max-width:35%;" :value="status.pid"/>
             <van-popover :actions="proxyCmd" @select="execProxyCmd" placement="bottom-end">
                 <template #reference>
-                    <van-cell :title="$t('dashboard.status-method')" title-style="max-width:35%;" :value="status.method" clickable/>
+                    <van-cell :title="t('dashboard.status-method')" title-style="max-width:35%;" :value="status.method" clickable/>
                 </template>
             </van-popover>
         </van-cell-group>
         <!-- cell-group tool -->
-        <van-cell-group :title="$t('dashboard.tool')" inset>
+        <van-cell-group :title="t('dashboard.tool')" inset>
             <van-space/>
             <van-row :gutter="[0, 11]" justify="space-around">
                 <van-col span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('core')">
-                        {{ $t('dashboard.tool-update-core') }}
+                        {{ t('dashboard.tool-update-core') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('adghome')">
-                        {{ $t('dashboard.tool-update-adghome') }}
+                        {{ t('dashboard.tool-update-adghome') }}
                     </van-button>
                 </van-col>
                 <van-col v-if="status.coreType==='v2ray'||status.coreType==='xray'" span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('geodata')">
-                        {{ $t('dashboard.tool-update-geodata') }}
+                        {{ t('dashboard.tool-update-geodata') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('subscribe')">
-                        {{ $t('dashboard.tool-update-subscribe') }}
+                        {{ t('dashboard.tool-update-subscribe') }}
                     </van-button>
                 </van-col>
                 <van-col v-if="status.coreType==='mihomo'" span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('yacd-meta')">
-                        {{ $t('dashboard.tool-update-yacd-meta') }}
+                        {{ t('dashboard.tool-update-yacd-meta') }}
                     </van-button>
                 </van-col>
                 <van-col v-if="status.coreType==='mihomo'" span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('metacubexd')">
-                        {{ $t('dashboard.tool-update-metacubexd') }}
+                        {{ t('dashboard.tool-update-metacubexd') }}
                     </van-button>
                 </van-col>
                 <van-col span="11">
                     <van-button plain hairline type="default" block @click="execUpdateCmd('tun2socks')">
-                        {{ $t('dashboard.tool-update-tun2socks') }}
+                        {{ t('dashboard.tool-update-tun2socks') }}
                     </van-button>
                 </van-col>
                 <van-col v-if="status.coreType==='mihomo'" span="11">
                     <van-button plain hairline type="default" block @click="switchClicked(false)">
-                        {{ $t('dashboard.tool-switch') }}
+                        {{ t('dashboard.tool-switch') }}
                     </van-button>
                 </van-col>
             </van-row>
@@ -90,9 +90,10 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 import {ref} from 'vue';
-import {callApi, execCmd, execXrayHelperCmd, readFile, saveFile} from "./tools.js";
-import i18n from "./locales/i18n.js"
+import {callApi, execCmd, execXrayHelperCmd} from "./tools.js";
 import StdoutReceiver from "./components/StdoutReceiver.vue";
 
 defineProps(["theme"]);
@@ -105,10 +106,10 @@ const switchCustom = ref(false)
 const switchChooser = ref(false)
 const switchChooserChecked = ref("")
 const switchResult = ref({result: []})
-const stdout = ref(i18n.global.t('common.waiting-text'))
+const stdout = ref(t('common.waiting-text'))
 const version = ref("")
 const status = ref({api: "", coreType: "xray", pid: "", method: "", dataDir: ""})
-const coreStatus = ref(i18n.global.t('dashboard.status-core-status-stopped'))
+const coreStatus = ref(t('dashboard.status-core-status-stopped'))
 
 const serviceCmd = [
     {text: 'start', value: 'start'},
@@ -181,9 +182,9 @@ const switchChecked = (custom, idx) => {
             localStorage.removeItem('switchCustomIdx')
         }
         if (value.ok) {
-            showToast(i18n.global.t('dashboard.tool-switch-success'))
+            showToast(t('dashboard.tool-switch-success'))
         } else {
-            showToast(i18n.global.t('dashboard.tool-switch-failed'))
+            showToast(t('dashboard.tool-switch-failed'))
         }
     })
 }
@@ -191,8 +192,8 @@ const refresh = () => {
     version.value = ""
     status.value = {api: "", coreType: "xray", pid: "", method: "", dataDir: ""}
     running.value = false
-    coreStatus.value = i18n.global.t('dashboard.status-core-status-stopped')
-    stdout.value = i18n.global.t('common.waiting-text')
+    coreStatus.value = t('dashboard.status-core-status-stopped')
+    stdout.value = t('common.waiting-text')
     disablePull.value = false
     initVersion()
     initStatus()
@@ -213,10 +214,10 @@ const initStatus = () => {
         status.value = value
         if (status.value.pid.length > 0) {
             running.value = true
-            coreStatus.value = i18n.global.t('dashboard.status-core-status-running')
+            coreStatus.value = t('dashboard.status-core-status-running')
         }
     }).catch(ex => {
-        showToast(i18n.global.t('dashboard.status-get-failed') + ex)
+        showToast(t('dashboard.status-get-failed') + ex)
     })
 }
 initVersion()

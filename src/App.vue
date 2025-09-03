@@ -1,6 +1,6 @@
 <template>
     <van-config-provider :theme="theme ? 'light' : 'dark'">
-        <van-nav-bar :title="$t('common.module-name')" placeholder fixed>
+        <van-nav-bar :title="t('common.module-name')" placeholder fixed>
             <template #left>
                 <van-icon size="1.2rem" @click="switchTheme" :name="light"/>
             </template>
@@ -16,14 +16,16 @@
             <component ref="routerViewRef" :is="Component" :theme="theme"/>
         </router-view>
         <van-tabbar route placeholder>
-            <van-tabbar-item replace to="/" icon="home-o">{{ $t('common.dashboard') }}</van-tabbar-item>
-            <van-tabbar-item replace to="/manage" icon="apps-o">{{ $t('common.manage') }}</van-tabbar-item>
-            <van-tabbar-item replace to="/setting" icon="setting-o">{{ $t('common.setting') }}</van-tabbar-item>
+            <van-tabbar-item replace to="/" icon="home-o">{{ t('common.dashboard') }}</van-tabbar-item>
+            <van-tabbar-item replace to="/manage" icon="apps-o">{{ t('common.manage') }}</van-tabbar-item>
+            <van-tabbar-item replace to="/setting" icon="setting-o">{{ t('common.setting') }}</van-tabbar-item>
         </van-tabbar>
     </van-config-provider>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 import {ref} from 'vue'
 import {execCmd} from './tools'
 import i18n from './locales/i18n'
